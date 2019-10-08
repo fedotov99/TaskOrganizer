@@ -1,5 +1,6 @@
 package com.company;
 import java.util.Date;
+import java.util.Map;
 
 enum PriorityType {
     LOW,
@@ -12,21 +13,28 @@ public class Task {
     private int taskID;
     private static int counter = 1;
     private String description;
+    private String report; // special public method of User's derived classes will set report (when complete task)
     private boolean completed;
     private PriorityType priority;
 
-    Task(String descr) {
+    Task(String _description) {
         taskID = counter++;
-        description = descr;
+        description = _description;
+        report = "";
         completed = false;
         priority = PriorityType.NORMAL;
     }
 
-    Task(String descr, PriorityType prior) {
+    Task(String _description, PriorityType _priority) {
         taskID = counter++;
-        description = descr;
+        description = _description;
+        report = "";
         completed = false;
-        priority = prior;
+        priority = _priority;
+    }
+
+    public int getTaskID() {
+        return taskID;
     }
 
     public String getDescription() {
@@ -35,6 +43,14 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getReport() {
+        return report;
+    }
+
+    public void setReport(String report) {
+        this.report = report;
     }
 
     public boolean isCompleted() {
@@ -51,5 +67,10 @@ public class Task {
 
     public void setPriority(PriorityType priority) {
         this.priority = priority;
+    }
+
+    public void printTaskInfo() {
+        System.out.print(this.getTaskID() + " " + this.getDescription() + " " + this.getPriority() + " " +
+                this.isCompleted() + "\n");
     }
 }
