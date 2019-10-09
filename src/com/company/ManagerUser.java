@@ -15,25 +15,25 @@ public class ManagerUser extends User {
     }
 
     @Override
-    public void completeTask (int _id, String _report) {            // implements abstract method in User
-        if (localUserTaskList.get(_id) != null) {
-            localUserTaskList.get(_id).setReport(_report);
-            localUserTaskList.get(_id).setCompleted(true);
-            localUserTaskList.remove(_id);
+    public void completeTask (int id, String report) {            // implements abstract method in User
+        if (localUserTaskList.get(id) != null) {
+            localUserTaskList.get(id).setReport(report);
+            localUserTaskList.get(id).setCompleted(true);
+            localUserTaskList.remove(id);
         }
     }
 
-    public void addSubordinate(SubordinateUser _su) {
-        subordinateList.putIfAbsent(_su.getUserID(), _su);
+    public void addSubordinate(SubordinateUser su) {
+        subordinateList.putIfAbsent(su.getUserID(), su);
     }
 
-    public void addToUncheckedTasksList(Task _task) {  // this method will be used by any subordinate who wants to send task request
-        uncheckedTasksList.putIfAbsent(_task.getTaskID(), _task);
+    public void addToUncheckedTasksList(Task task) {  // this method will be used by any subordinate who wants to send task request
+        uncheckedTasksList.putIfAbsent(task.getTaskID(), task);
     }
 
-    public void assignTaskToSubordinate(Task _task, SubordinateUser _su) {
-        if (localUserTaskList.containsKey(_task) && subordinateList.containsKey(_su)) { // can assign only OUR employee
-            _su.addTask(_task);
+    public void assignTaskToSubordinate(Task task, SubordinateUser su) {
+        if (localUserTaskList.containsKey(task) && subordinateList.containsKey(su)) { // can assign only OUR employee
+            su.addTask(task);
         }
     }
 

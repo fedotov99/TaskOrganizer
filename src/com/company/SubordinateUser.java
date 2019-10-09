@@ -11,25 +11,25 @@ public class SubordinateUser extends User {
     private int score = 0;
     private PositionType position;
 
-    public SubordinateUser(String _name, ManagerUser _manager, int _score, PositionType _position) {
-        super(_name);
-        manager = _manager;
-        score = _score;
-        position = _position;
+    public SubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
+        super(name);
+        this.manager = manager;
+        this.score = score;
+        this.position = position;
         // manager.addSubordinate(this);
     }
 
     @Override
-    public void completeTask (int _id, String _report) {            // implements abstract method in User
-        if (localUserTaskList.get(_id) != null) {
-            localUserTaskList.get(_id).setReport(_report);
-            localUserTaskList.get(_id).setCompleted(true);
-            sendRequestForTaskApprovalToManager(localUserTaskList.get(_id));
-            localUserTaskList.remove(_id);
+    public void completeTask (int id, String report) {            // implements abstract method in User
+        if (localUserTaskList.get(id) != null) {
+            localUserTaskList.get(id).setReport(report);
+            localUserTaskList.get(id).setCompleted(true);
+            sendRequestForTaskApprovalToManager(localUserTaskList.get(id));
+            localUserTaskList.remove(id);
         }
     }
 
-    private void sendRequestForTaskApprovalToManager(Task _task) {
-        this.manager.addToUncheckedTasksList(_task);
+    private void sendRequestForTaskApprovalToManager(Task task) {
+        this.manager.addToUncheckedTasksList(task);
     }
 }

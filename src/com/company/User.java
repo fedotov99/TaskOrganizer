@@ -9,14 +9,14 @@ public abstract class User {
     protected HashMap<Integer, Task> localUserTaskList = new HashMap<Integer, Task>();
 
     User() {
-        userID = counter++;
-        name = "User" + userID;
+        this.userID = counter++;
+        this.name = "User" + userID;
         // localUserTaskList = new HashMap<Integer, Task>(); // there was a bug
     }
 
-    User(String _name) {
-        userID = counter++;
-        name = _name;
+    User(String name) {
+        this.userID = counter++;
+        this.name = name;
     }
 
     public void addTask(Task task) {  // bug
@@ -25,11 +25,11 @@ public abstract class User {
         //localUserTaskList.putIfAbsent(i, task);
     }
 
-    public abstract void completeTask (int _id, String _report);
+    public abstract void completeTask (int id, String report);
 
-    public void deleteTask(int _id) {
-        if (localUserTaskList.containsKey(_id)) {
-            localUserTaskList.remove(_id);
+    public void deleteTask(int id) {
+        if (localUserTaskList.containsKey(id)) {
+            localUserTaskList.remove(id);
         }
     }
 

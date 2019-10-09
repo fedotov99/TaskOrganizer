@@ -14,7 +14,7 @@ public class Main {
         System.out.println(Ann.getName());
         System.out.println(Paul.getName());
         Ann.addTask(t); // bug
-       // Ann.assignTaskToSubordinate(t, Paul);
-       // Paul.completeTask(t.getTaskID(), "I made this task, Ann, check it please!");
+        Ann.assignTaskToSubordinate(t, Paul);
+        Paul.completeTask(t.getTaskID(), "I made this task, Ann, check it please!");
     }
 }

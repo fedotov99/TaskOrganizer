@@ -17,20 +17,20 @@ public class Task {
     private boolean completed;
     private PriorityType priority;
 
-    Task(String _description) {
-        taskID = counter++;
-        description = _description;
-        report = "";
-        completed = false;
-        priority = PriorityType.NORMAL;
+    Task(String description) {
+        this.taskID = counter++;
+        this.description = description;
+        this.report = "";
+        this.completed = false;
+        this.priority = PriorityType.NORMAL;
     }
 
-    Task(String _description, PriorityType _priority) {
-        taskID = counter++;
-        description = _description;
-        report = "";
-        completed = false;
-        priority = _priority;
+    Task(String description, PriorityType priority) {
+        this.taskID = counter++;
+        this.description = description;
+        this.report = "";
+        this.completed = false;
+        this.priority = priority;
     }
 
     public int getTaskID() {
