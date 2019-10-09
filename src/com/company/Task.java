@@ -60,8 +60,9 @@ public class Task {
         this.priority = priority;
     }
 
-    public void printTaskInfo() {
-        System.out.print(this.getTaskID() + " " + this.getDescription() + " " + this.getPriority() + " " +
-                this.isCompleted() + "\n");
+    @Override
+    public String toString() {
+        return this.getTaskID() + " " + this.getDescription() + " " + this.getPriority() + " " +
+                this.isCompleted() + "\n";
     }
 }

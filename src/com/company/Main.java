@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         Task t  = new Task("Write email to customer");
         t.setPriority(PriorityType.URGENT);
-        t.printTaskInfo(); // 1 Write email to customer URGENT false
+        System.out.println(t.toString()); // 1 Write email to customer URGENT false
 
         ManagerUser Ann = new ManagerUser("Ann");
         SubordinateUser Paul = new SubordinateUser("Paul", Ann, 0, PositionType.Junior);
