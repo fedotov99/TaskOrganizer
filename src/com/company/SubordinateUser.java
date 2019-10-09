@@ -1,11 +1,5 @@
 package com.company;
 
-enum PositionType {
-    Junior,
-    Middle,
-    Senior
-}
-
 public class SubordinateUser extends User {
     private ManagerUser manager;
     private int score = 0;

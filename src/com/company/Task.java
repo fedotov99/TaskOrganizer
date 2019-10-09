@@ -2,13 +2,6 @@ package com.company;
 import java.util.Date;
 import java.util.Map;
 
-enum PriorityType {
-    LOW,
-    NORMAL,
-    HIGH,
-    URGENT
-}
-
 public class Task {
     private int taskID;
     private static int counter = 1;
