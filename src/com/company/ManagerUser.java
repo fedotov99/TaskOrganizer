@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ManagerUser extends User {
-    private HashMap<Integer, SubordinateUser>  subordinateList; // each manager will have one or more sub.
-    private HashMap<Integer, Task> uncheckedTasksList; // requests from sub.
+    // each manager will have one or more sub.
+    private HashMap<Integer, SubordinateUser>  subordinateList = new HashMap<Integer, SubordinateUser>();
+    private HashMap<Integer, Task> uncheckedTasksList = new HashMap<Integer, Task>(); // requests from sub.
 
     ManagerUser(String _name) {
         super(_name);
-        subordinateList = new HashMap<Integer, SubordinateUser>();
-        uncheckedTasksList = new HashMap<Integer, Task>();
+        // subordinateList = new HashMap<Integer, SubordinateUser>();
+        // uncheckedTasksList = new HashMap<Integer, Task>();
     }
 
     @Override

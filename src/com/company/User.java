@@ -6,12 +6,12 @@ public abstract class User {
     private int userID;
     private static int counter = 1;
     private String name;
-    protected HashMap<Integer, Task> localUserTaskList;
+    protected HashMap<Integer, Task> localUserTaskList = new HashMap<Integer, Task>();
 
     User() {
         userID = counter++;
         name = "User" + userID;
-        localUserTaskList = new HashMap<Integer, Task>();
+        // localUserTaskList = new HashMap<Integer, Task>(); // there was a bug
     }
 
     User(String _name) {
