@@ -6,7 +6,7 @@ public abstract class User {
     private int userID;
     private static int counter = 1;
     private String name;
-    protected HashMap<Integer, Task> localUserTaskList = new HashMap<Integer, Task>();
+    protected Map<Integer, Task> localUserTaskList = new HashMap<Integer, Task>();
 
     User() {
         this.userID = counter++;

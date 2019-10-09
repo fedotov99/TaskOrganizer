@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class ManagerUser extends User {
     // each manager will have one or more sub.
-    private HashMap<Integer, SubordinateUser>  subordinateList = new HashMap<Integer, SubordinateUser>();
-    private HashMap<Integer, Task> uncheckedTasksList = new HashMap<Integer, Task>(); // requests from sub.
+    private Map<Integer, SubordinateUser>  subordinateList = new HashMap<Integer, SubordinateUser>();
+    private Map<Integer, Task> uncheckedTasksList = new HashMap<Integer, Task>(); // requests from sub.
 
     ManagerUser(String _name) {
         super(_name);
