@@ -13,15 +13,13 @@ public class Task {
     private int taskID;
     private static int counter = 1;
     private String description;
-    private String report; // special public method of User's derived classes will set report (when complete task)
-    private boolean completed;
+    private String report = ""; // special public method of User's derived classes will set report (when complete task)
+    private boolean completed = false;
     private PriorityType priority;
 
     Task(String description) {
         this.taskID = counter++;
         this.description = description;
-        this.report = "";
-        this.completed = false;
         this.priority = PriorityType.NORMAL;
     }
 
