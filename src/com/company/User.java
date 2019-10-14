@@ -19,20 +19,6 @@ public abstract class User {
         this.name = name;
     }
 
-    public void addTask(Task task) {  // bug
-        Integer i = task.getTaskID();
-        localUserTaskList.put(i, task);
-        //localUserTaskList.putIfAbsent(i, task);
-    }
-
-    public abstract void completeTask (int id, String report);
-
-    public void deleteTask(int id) {
-        if (localUserTaskList.containsKey(id)) {
-            localUserTaskList.remove(id);
-        }
-    }
-
     public int getUserID() {
         return userID;
     }
