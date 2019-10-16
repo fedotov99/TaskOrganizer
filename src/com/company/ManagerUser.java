@@ -13,12 +13,4 @@ public class ManagerUser extends User {
         // subordinateList = new HashMap<Integer, SubordinateUser>();
         // uncheckedTasksList = new HashMap<Integer, Task>();
     }
-
-    public int getSubordinatesSize() {
-        return subordinateList.size();
-    }
-
-    public int getUncheckedTasksListSize() {
-        return uncheckedTasksList.size();
-    }
 }

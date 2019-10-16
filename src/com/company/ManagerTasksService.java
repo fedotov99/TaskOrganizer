@@ -27,4 +27,12 @@ public class ManagerTasksService extends UserTasksService {
             addTaskToUser(su, task);
         }
     }
+
+    public int getSubordinatesSizeOfManager(ManagerUser manager) {
+        return manager.subordinateList.size();
+    }
+
+    public int getUncheckedTasksListSize(ManagerUser manager) {
+        return manager.uncheckedTasksList.size();
+    }
 }
