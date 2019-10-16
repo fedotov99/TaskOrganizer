@@ -1,5 +1,9 @@
 package com.company;
 
+import com.company.model.*;
+import com.company.service.ManagerTasksService;
+import com.company.service.SubordinateTasksService;
+
 public class Main {
 
     public static void main(String[] args) {
