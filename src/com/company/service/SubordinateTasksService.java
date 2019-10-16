@@ -1,14 +1,18 @@
-package com.company;
+package com.company.service;
+
+import com.company.model.SubordinateUser;
+import com.company.model.Task;
+import com.company.model.User;
 
 public class SubordinateTasksService extends UserTasksService {
     @Override
     public void completeTask (User subordinate, int id, String report) {            // implements abstract method in User
         if (subordinate instanceof SubordinateUser) {
-            if (subordinate.localUserTaskList.get(id) != null) {
-                subordinate.localUserTaskList.get(id).setReport(report);
-                subordinate.localUserTaskList.get(id).setCompleted(true);
-                sendRequestForTaskApprovalToManager((SubordinateUser)subordinate, subordinate.localUserTaskList.get(id));
-                subordinate.localUserTaskList.remove(id);
+            if (subordinate.getLocalUserTaskList().get(id) != null) {
+                subordinate.getLocalUserTaskList().get(id).setReport(report);
+                subordinate.getLocalUserTaskList().get(id).setCompleted(true);
+                sendRequestForTaskApprovalToManager((SubordinateUser)subordinate, subordinate.getLocalUserTaskList().get(id));
+                subordinate.getLocalUserTaskList().remove(id);
             }
         } else {
             System.out.println("Wrong user!");
@@ -16,7 +20,7 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     protected void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
-        ManagerTasksService.addToUncheckedTasksListOfManager(subordinate.manager, task);
+        ManagerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
     }
 
 }

@@ -1,7 +1,9 @@
-package com.company;
+package com.company.model;
+
+import com.company.service.ManagerTasksService;
 
 public class SubordinateUser extends User {
-    protected ManagerUser manager;
+    private ManagerUser manager;
     private int score = 0;
     private PositionType position;
 
@@ -10,7 +12,7 @@ public class SubordinateUser extends User {
         this.manager = manager;
         this.score = score;
         this.position = position;
-        // manager.addSubordinate(this);
+        // how to call automatically for this created object ManagerTasksService::addSubordinateToManager() ?
     }
 
     public ManagerUser getManager() {

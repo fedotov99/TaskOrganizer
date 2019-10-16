@@ -1,13 +1,18 @@
-package com.company;
+package com.company.service;
+
+import com.company.model.ManagerUser;
+import com.company.model.SubordinateUser;
+import com.company.model.Task;
+import com.company.model.User;
 
 public class ManagerTasksService extends UserTasksService {
     @Override
     public void completeTask (User manager, int id, String report) {            // implements abstract method in User
         if (manager instanceof ManagerUser) {
-            if (manager.localUserTaskList.get(id) != null) {
-                manager.localUserTaskList.get(id).setReport(report);
-                manager.localUserTaskList.get(id).setCompleted(true);
-                manager.localUserTaskList.remove(id);
+            if (manager.getLocalUserTaskList().get(id) != null) {
+                manager.getLocalUserTaskList().get(id).setReport(report);
+                manager.getLocalUserTaskList().get(id).setCompleted(true);
+                manager.getLocalUserTaskList().remove(id);
             }
         } else {
             System.out.println("Wrong user!");
@@ -15,24 +20,24 @@ public class ManagerTasksService extends UserTasksService {
     }
 
     public void addSubordinateToManager(ManagerUser manager, SubordinateUser su) {
-        manager.subordinateList.putIfAbsent(su.getUserID(), su);
+        manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
     }
 
     public static void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
-        manager.uncheckedTasksList.putIfAbsent(task.getTaskID(), task);
+        manager.getUncheckedTasksList().putIfAbsent(task.getTaskID(), task);
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
-        if (manager.localUserTaskList.containsKey(task) && manager.subordinateList.containsKey(su)) { // can assign only OUR employee
+        if (manager.getLocalUserTaskList().containsKey(task) && manager.getSubordinateList().containsKey(su)) { // can assign only OUR employee
             addTaskToUser(su, task);
         }
     }
 
     public int getSubordinatesSizeOfManager(ManagerUser manager) {
-        return manager.subordinateList.size();
+        return manager.getSubordinateList().size();
     }
 
     public int getUncheckedTasksListSize(ManagerUser manager) {
-        return manager.uncheckedTasksList.size();
+        return manager.getUncheckedTasksList().size();
     }
 }

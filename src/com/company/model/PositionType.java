@@ -1,6 +1,6 @@
-package com.company;
+package com.company.model;
 
-enum PositionType {
+public enum PositionType {
     Junior,
     Middle,
     Senior

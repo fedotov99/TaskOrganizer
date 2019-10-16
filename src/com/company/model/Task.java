@@ -1,6 +1,4 @@
-package com.company;
-import java.util.Date;
-import java.util.Map;
+package com.company.model;
 
 public class Task {
     private int taskID;
@@ -10,13 +8,13 @@ public class Task {
     private boolean completed = false;
     private PriorityType priority;
 
-    Task(String description) {
+    public Task(String description) {
         this.taskID = counter++;
         this.description = description;
         this.priority = PriorityType.NORMAL;
     }
 
-    Task(String description, PriorityType priority) {
+    public Task(String description, PriorityType priority) {
         this.taskID = counter++;
         this.description = description;
         this.report = "";

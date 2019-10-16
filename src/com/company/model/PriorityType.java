@@ -1,6 +1,6 @@
-package com.company;
+package com.company.model;
 
-enum PriorityType {
+public enum PriorityType {
     LOW,
     NORMAL,
     HIGH,
