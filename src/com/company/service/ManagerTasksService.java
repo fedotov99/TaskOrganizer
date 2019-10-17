@@ -49,12 +49,10 @@ public class ManagerTasksService extends UserTasksService {
         Predicate<SubordinateUser> subordinateUserPredicate = new Predicate<SubordinateUser>() {
             @Override
             public boolean test(SubordinateUser subordinateUser) {
-                Stream<Task> taskStream = subordinateUser.getLocalUserTaskList().values().stream();
-                return taskStream.anyMatch(taskPredicate);
+                return subordinateUser.getLocalUserTaskList().values().stream().anyMatch(taskPredicate);
             }
         };
         Map<Integer, SubordinateUser> subList = manager.getSubordinateList();
-        return subList.values().stream()
-                .filter(subordinateUserPredicate).toArray(SubordinateUser[]::new);
+        return subList.values().stream().filter(subordinateUserPredicate).toArray(SubordinateUser[]::new);
     }
 }
