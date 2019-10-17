@@ -32,7 +32,8 @@ public class Main {
         managerService.assignTaskToSubordinateOfManager(Ann, t, Paul);
         subService.completeTask(Paul, t.getTaskID(), "I made this task, Ann, check it please!");  // now no subordinates has tasks
         managerService.approveTaskInUncheckedTasksListOfManager(Ann, t);
-        System.out.println("Paul's score is " + Paul.getScore());
+        // managerService.declineTaskInUncheckedTasksListOfManager(Ann, t);
+        System.out.println("Paul's score is " + Paul.getScore());  // Paul received +10 to score, because task was URGENT
 
         Task t1 = new Task("Write interface", PriorityType.NORMAL);
         Task t2 = new Task("Make UML model", PriorityType.URGENT);

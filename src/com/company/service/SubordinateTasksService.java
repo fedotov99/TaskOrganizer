@@ -25,6 +25,7 @@ public class SubordinateTasksService extends UserTasksService {
 
     private void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
         ManagerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
+        deleteTask(subordinate, task.getTaskID()); // thinks that it is ready (until manager doesn't decline)
     }
 
 }

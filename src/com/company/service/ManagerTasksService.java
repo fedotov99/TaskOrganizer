@@ -30,11 +30,8 @@ public class ManagerTasksService extends UserTasksService {
 
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
-            manager.getUncheckedTasksList().remove(task.getTaskID());
-
             if (task.getExecutor() instanceof SubordinateUser) {
                 int currentScore = ((SubordinateUser) task.getExecutor()).getScore();
-                System.out.println("priority " + task.getPriority());
                 switch (task.getPriority()) {
                     case URGENT:
                         ((SubordinateUser) task.getExecutor()).setScore(currentScore += 10);
@@ -50,13 +47,24 @@ public class ManagerTasksService extends UserTasksService {
                         break;
                 }
             }
+            manager.getUncheckedTasksList().remove(task.getTaskID());
+        }
+    }
+
+    public void declineTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) { // changes requested
+        if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
+            if (task.getExecutor() instanceof SubordinateUser) {
+                assignTaskToSubordinateOfManager(manager, task, (SubordinateUser)task.getExecutor()); // send back
+            }
+            manager.getUncheckedTasksList().remove(task.getTaskID());
         }
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
-        if (manager.getLocalUserTaskList().containsKey(task.getTaskID()) && manager.getSubordinateList().containsKey(su.getUserID())) { // can assign only OUR employee
+        if ((manager.getLocalUserTaskList().containsKey(task.getTaskID()) || manager.getUncheckedTasksList().containsKey(task.getTaskID())) && manager.getSubordinateList().containsKey(su.getUserID())) { // can assign only OUR employee
             addTaskToUser(su, task);
         }
+        deleteTask(manager, task.getTaskID()); // sent to subordinate and got rid of this task
     }
 
     public int getSubordinatesSizeOfManager(ManagerUser manager) {
