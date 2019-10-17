@@ -45,7 +45,7 @@ public class ManagerTasksService extends UserTasksService {
         return manager.getUncheckedTasksList().size();
     }
 
-    public void selectSubordinatesWithDefiniteTaskType(ManagerUser manager, Predicate<Task> taskPredicate) {
+    public SubordinateUser[] selectSubordinatesWithDefiniteTaskType(ManagerUser manager, Predicate<Task> taskPredicate) {
         Predicate<SubordinateUser> subordinateUserPredicate = new Predicate<SubordinateUser>() {
             @Override
             public boolean test(SubordinateUser subordinateUser) {
@@ -54,9 +54,7 @@ public class ManagerTasksService extends UserTasksService {
             }
         };
         Map<Integer, SubordinateUser> subList = manager.getSubordinateList();
-        Stream<SubordinateUser> subStream = subList.values().stream();
-        subStream
-                .filter(subordinateUserPredicate)
-                .forEach(i->System.out.println(i.toString()));
+        return subList.values().stream()
+                .filter(subordinateUserPredicate).toArray(SubordinateUser[]::new);
     }
 }

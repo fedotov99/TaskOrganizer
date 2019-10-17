@@ -4,6 +4,7 @@ import com.company.model.*;
 import com.company.service.ManagerTasksService;
 import com.company.service.SubordinateTasksService;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.*;
@@ -54,14 +55,7 @@ public class Main {
 
         System.out.println("\nSubordinates of Ann who has URGENT priority tasks: ");
         Predicate<Task> isTaskUrgent = task -> task.getPriority() == PriorityType.URGENT;
-        managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskUrgent);
-
-        System.out.println("\nSubordinates of Ann who has NORMAL priority tasks: ");
-        Predicate<Task> isTaskNormal = task -> task.getPriority() == PriorityType.NORMAL;
-        managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskNormal);
-
-        System.out.println("\nSubordinates of Ann who has LOW priority tasks: ");
-        Predicate<Task> isTaskLow = task -> task.getPriority() == PriorityType.LOW;
-        managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskLow);
+        SubordinateUser[] sUserArray = managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskUrgent);
+        Arrays.stream(sUserArray).forEach(i->System.out.println(i.toString()));
     }
 }
