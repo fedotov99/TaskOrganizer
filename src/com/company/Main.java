@@ -52,9 +52,16 @@ public class Main {
         subService.addTaskToUser(Jack, t6);  // now Jack has urgent task too
         subService.addTaskToUser(Jack, t7);  // now Jack has two urgent tasks
 
+        System.out.println("\nSubordinates of Ann who has URGENT priority tasks: ");
         Predicate<Task> isTaskUrgent = task -> task.getPriority() == PriorityType.URGENT;
-
-        // print subordinates of Ann who has urgent tasks
         managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskUrgent);
+
+        System.out.println("\nSubordinates of Ann who has NORMAL priority tasks: ");
+        Predicate<Task> isTaskNormal = task -> task.getPriority() == PriorityType.NORMAL;
+        managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskNormal);
+
+        System.out.println("\nSubordinates of Ann who has LOW priority tasks: ");
+        Predicate<Task> isTaskLow = task -> task.getPriority() == PriorityType.LOW;
+        managerService.selectSubordinatesWithDefiniteTaskType(Ann, isTaskLow);
     }
 }
