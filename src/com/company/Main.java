@@ -22,16 +22,11 @@ public class Main {
 
         // create subordinates and link them with their manager
         ManagerUser Ann = new ManagerUser("Ann");
-        SubordinateUser Paul = new SubordinateUser("Paul", Ann, 0, PositionType.Junior);
-        managerService.addSubordinateToManager(Ann, Paul);
-        SubordinateUser Mike = new SubordinateUser("Mike", Ann, 0, PositionType.Middle);
-        managerService.addSubordinateToManager(Ann, Mike);
-        SubordinateUser Jack = new SubordinateUser("Jack", Ann, 0, PositionType.Junior);
-        managerService.addSubordinateToManager(Ann, Jack);
-        SubordinateUser John = new SubordinateUser("John", Ann, 0, PositionType.Middle);
-        managerService.addSubordinateToManager(Ann, John);
-        SubordinateUser Kate = new SubordinateUser("Kate", Ann, 0, PositionType.Junior);
-        managerService.addSubordinateToManager(Ann, Jack);
+        SubordinateUser Paul = subService.createSubordinateUser("Paul", Ann, 0, PositionType.Junior);
+        SubordinateUser Mike = subService.createSubordinateUser("Mike", Ann, 0, PositionType.Middle);
+        SubordinateUser Jack = subService.createSubordinateUser("Jack", Ann, 0, PositionType.Junior);
+        SubordinateUser John = subService.createSubordinateUser("John", Ann, 0, PositionType.Middle);
+        SubordinateUser Kate = subService.createSubordinateUser("Kate", Ann, 0, PositionType.Junior);
 
         managerService.addTaskToUser(Ann, t);
         managerService.assignTaskToSubordinateOfManager(Ann, t, Paul);
