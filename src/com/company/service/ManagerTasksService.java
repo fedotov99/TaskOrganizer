@@ -5,6 +5,10 @@ import com.company.model.SubordinateUser;
 import com.company.model.Task;
 import com.company.model.User;
 
+import java.util.Map;
+import java.util.stream.*;
+import java.util.function.*;
+
 public class ManagerTasksService extends UserTasksService {
     @Override
     public void completeTask (User manager, int id, String report) {            // implements abstract method in User
@@ -39,5 +43,20 @@ public class ManagerTasksService extends UserTasksService {
 
     public int getUncheckedTasksListSize(ManagerUser manager) {
         return manager.getUncheckedTasksList().size();
+    }
+
+    public void selectSubordinatesWithDefiniteTaskType(ManagerUser manager, Predicate<Task> taskPredicate) {
+        Predicate<SubordinateUser> subordinateUserPredicate = new Predicate<SubordinateUser>() {
+            @Override
+            public boolean test(SubordinateUser subordinateUser) {
+                Stream<Task> taskStream = subordinateUser.getLocalUserTaskList().values().stream();
+                return taskStream.anyMatch(taskPredicate);
+            }
+        };
+        Map<Integer, SubordinateUser> subList = manager.getSubordinateList();
+        Stream<SubordinateUser> subStream = subList.values().stream();
+        subStream
+                .filter(subordinateUserPredicate)
+                .forEach(i->System.out.println(i.toString()));
     }
 }
