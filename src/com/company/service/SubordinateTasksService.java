@@ -23,7 +23,7 @@ public class SubordinateTasksService extends UserTasksService {
         }
     }
 
-    protected void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
+    private void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
         ManagerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
     }
 

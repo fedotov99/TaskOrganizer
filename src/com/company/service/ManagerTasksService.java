@@ -23,11 +23,11 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
-    public static void addSubordinateToManager(ManagerUser manager, SubordinateUser su) {
+    protected static void addSubordinateToManager(ManagerUser manager, SubordinateUser su) {
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
     }
 
-    public static void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
+    protected static void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
         manager.getUncheckedTasksList().putIfAbsent(task.getTaskID(), task);
     }
 
