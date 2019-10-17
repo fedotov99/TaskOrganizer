@@ -23,7 +23,7 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
-    public void addSubordinateToManager(ManagerUser manager, SubordinateUser su) {
+    public static void addSubordinateToManager(ManagerUser manager, SubordinateUser su) {
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
     }
 
