@@ -31,6 +31,8 @@ public class Main {
         managerService.addTaskToUser(Ann, t);
         managerService.assignTaskToSubordinateOfManager(Ann, t, Paul);
         subService.completeTask(Paul, t.getTaskID(), "I made this task, Ann, check it please!");  // now no subordinates has tasks
+        managerService.approveTaskInUncheckedTasksListOfManager(Ann, t);
+        System.out.println("Paul's score is " + Paul.getScore());
 
         Task t1 = new Task("Write interface", PriorityType.NORMAL);
         Task t2 = new Task("Make UML model", PriorityType.URGENT);

@@ -7,6 +7,7 @@ public class Task {
     private String report = ""; // special public method of User's derived classes will set report (when complete task)
     private boolean completed = false;
     private PriorityType priority;
+    private User executor = null;
 
     public Task(String description) {
         this.taskID = counter++;
@@ -56,6 +57,14 @@ public class Task {
 
     public void setPriority(PriorityType priority) {
         this.priority = priority;
+    }
+
+    public User getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(User executor) {
+        this.executor = executor;
     }
 
     @Override

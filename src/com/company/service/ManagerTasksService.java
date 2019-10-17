@@ -1,9 +1,6 @@
 package com.company.service;
 
-import com.company.model.ManagerUser;
-import com.company.model.SubordinateUser;
-import com.company.model.Task;
-import com.company.model.User;
+import com.company.model.*;
 
 import java.util.Map;
 import java.util.stream.*;
@@ -31,8 +28,33 @@ public class ManagerTasksService extends UserTasksService {
         manager.getUncheckedTasksList().putIfAbsent(task.getTaskID(), task);
     }
 
+    public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
+        if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
+            manager.getUncheckedTasksList().remove(task.getTaskID());
+
+            if (task.getExecutor() instanceof SubordinateUser) {
+                int currentScore = ((SubordinateUser) task.getExecutor()).getScore();
+                System.out.println("priority " + task.getPriority());
+                switch (task.getPriority()) {
+                    case URGENT:
+                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 10);
+                        break;
+                    case HIGH:
+                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 7);
+                        break;
+                    case NORMAL:
+                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 5);
+                        break;
+                    default:
+                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 3);
+                        break;
+                }
+            }
+        }
+    }
+
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
-        if (manager.getLocalUserTaskList().containsKey(task) && manager.getSubordinateList().containsKey(su)) { // can assign only OUR employee
+        if (manager.getLocalUserTaskList().containsKey(task.getTaskID()) && manager.getSubordinateList().containsKey(su.getUserID())) { // can assign only OUR employee
             addTaskToUser(su, task);
         }
     }
