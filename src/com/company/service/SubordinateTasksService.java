@@ -1,10 +1,14 @@
 package com.company.service;
 
-import com.company.model.SubordinateUser;
-import com.company.model.Task;
-import com.company.model.User;
+import com.company.model.*;
 
 public class SubordinateTasksService extends UserTasksService {
+    public SubordinateUser createSubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
+        SubordinateUser newSU = new SubordinateUser(name, manager, score, position);
+        ManagerTasksService.addSubordinateToManager(manager, newSU);
+        return newSU;
+    }
+
     @Override
     public void completeTask (User subordinate, int id, String report) {            // implements abstract method in User
         if (subordinate instanceof SubordinateUser) {
