@@ -5,8 +5,17 @@ import com.company.model.*;
 import java.util.Map;
 import java.util.stream.*;
 import java.util.function.*;
+import java.util.HashMap;
 
 public class ManagerTasksService extends UserTasksService {
+    private static final Map<PriorityType, Integer> taskValue = new HashMap<PriorityType, Integer>();
+    {
+        taskValue.put(PriorityType.URGENT, 10);
+        taskValue.put(PriorityType.HIGH, 7);
+        taskValue.put(PriorityType.NORMAL, 5);
+        taskValue.put(PriorityType.LOW, 3);
+    }
+
     @Override
     public void completeTask (User manager, int id, String report) {            // implements abstract method in User
         if (manager instanceof ManagerUser) {
@@ -31,21 +40,7 @@ public class ManagerTasksService extends UserTasksService {
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
             if (task.getExecutor() instanceof SubordinateUser) {
-                int currentScore = ((SubordinateUser) task.getExecutor()).getScore();
-                switch (task.getPriority()) {
-                    case URGENT:
-                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 10);
-                        break;
-                    case HIGH:
-                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 7);
-                        break;
-                    case NORMAL:
-                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 5);
-                        break;
-                    default:
-                        ((SubordinateUser) task.getExecutor()).setScore(currentScore += 3);
-                        break;
-                }
+                ((SubordinateUser) task.getExecutor()).setScore(((SubordinateUser) task.getExecutor()).getScore() + taskValue.get(task.getPriority()));
             }
             manager.getUncheckedTasksList().remove(task.getTaskID());
         }
