@@ -3,12 +3,8 @@ package com.company;
 import com.company.model.*;
 import com.company.service.ManagerTasksService;
 import com.company.service.SubordinateTasksService;
-
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.*;
-import java.util.function.*;
+import java.util.function.Predicate;
 
 public class Main {
 

@@ -1,10 +1,8 @@
 package com.company.service;
 
 import com.company.model.*;
-
 import java.util.Map;
-import java.util.stream.*;
-import java.util.function.*;
+import java.util.function.Predicate;
 import java.util.HashMap;
 
 public class ManagerTasksService extends UserTasksService {

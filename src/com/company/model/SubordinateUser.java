@@ -1,7 +1,5 @@
 package com.company.model;
 
-import com.company.service.ManagerTasksService;
-
 public class SubordinateUser extends User {
     private ManagerUser manager;
     private int score = 0;
