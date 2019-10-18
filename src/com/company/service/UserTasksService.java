@@ -6,6 +6,7 @@ import com.company.model.User;
 public abstract class UserTasksService {
     public void addTaskToUser(User user, Task task) {  // bug
         Integer i = task.getTaskID();
+        task.setCompleted(false);
         task.setExecutor(user);
         user.getLocalUserTaskList().put(i, task);
     }
