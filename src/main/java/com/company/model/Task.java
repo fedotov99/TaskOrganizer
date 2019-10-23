@@ -1,7 +1,12 @@
 package com.company.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 public class Task {
-    private int taskID;
+    @Id
+    private String taskID;
     private static int counter = 1;
     private String description;
     private String report = ""; // special public method of User's derived classes will set report (when complete task)
@@ -10,20 +15,20 @@ public class Task {
     private User executor = null;
 
     public Task(String description) {
-        this.taskID = counter++;
+        // this.taskID = counter++;
         this.description = description;
         this.priority = PriorityType.NORMAL;
     }
 
     public Task(String description, PriorityType priority) {
-        this.taskID = counter++;
+        // this.taskID = counter++;
         this.description = description;
         this.report = "";
         this.completed = false;
         this.priority = priority;
     }
 
-    public int getTaskID() {
+    public String getTaskID() {
         return taskID;
     }
 

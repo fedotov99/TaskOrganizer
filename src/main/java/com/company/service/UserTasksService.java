@@ -1,19 +1,17 @@
 package com.company.service;
 
-import com.company.model.Task;
-import com.company.model.User;
+import com.company.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Service
 public abstract class UserTasksService {
-    public void addTaskToUser(User user, Task task) {  // bug
-        Integer i = task.getTaskID();
-        task.setCompleted(false);
-        task.setExecutor(user);
-        user.getLocalUserTaskList().put(i, task);
-    }
 
     public abstract void completeTask (User user, int id, String report);
 
-    public void deleteTask(User user, int id) {
+    public void deleteTask(User user, String id) {
         if (user.getLocalUserTaskList().containsKey(id)) {
             user.getLocalUserTaskList().remove(id);
         }

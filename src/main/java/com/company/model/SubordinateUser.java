@@ -1,5 +1,8 @@
 package com.company.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
 public class SubordinateUser extends User {
     private ManagerUser manager;
     private int score = 0;

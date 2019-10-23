@@ -1,25 +1,28 @@
 package com.company.model;
+import org.springframework.data.annotation.Id;
+
 import java.util.Map;
 import java.util.HashMap;
 
 public abstract class User {
-    private int userID;
+    @Id
+    private String userID;
     private static int counter = 1;
     private String name;
-    private Map<Integer, Task> localUserTaskList = new HashMap<Integer, Task>();
+    private Map<String, Task> localUserTaskList = new HashMap<String, Task>();
 
     public User() {
-        this.userID = counter++;
+        // this.userID = counter++;
         this.name = "User" + userID;
         // localUserTaskList = new HashMap<Integer, Task>(); // there was a bug
     }
 
     User(String name) {
-        this.userID = counter++;
+        // this.userID = counter++;
         this.name = name;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return userID;
     }
 
@@ -31,7 +34,7 @@ public abstract class User {
         this.name = name;
     }
 
-    public Map<Integer, Task> getLocalUserTaskList() {
+    public Map<String, Task> getLocalUserTaskList() {
         return localUserTaskList;
     }
 

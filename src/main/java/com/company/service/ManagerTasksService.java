@@ -1,11 +1,52 @@
 package com.company.service;
 
 import com.company.model.*;
+import com.company.repository.ManagerUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.HashMap;
 
+@Service
 public class ManagerTasksService extends UserTasksService {
+    @Autowired
+    protected ManagerUserRepository managerUserRepository;
+
+    public ManagerUser createManagerUser(String name) {
+        return managerUserRepository.save(new ManagerUser(name));
+    }
+
+    public ManagerUser getByUserID(String id) {
+        return managerUserRepository.findByUserID(id);
+    }
+
+    public ManagerUser getByName(String name) {
+        return managerUserRepository.findByName(name);
+    }
+
+    public List<ManagerUser> getAll(){
+        return managerUserRepository.findAll();
+    }
+
+    public ManagerUser updateManagerUser(String id, String name, Map<String, SubordinateUser> subordinateList, Map<String, Task> uncheckedTasksList) {
+        ManagerUser newMU = managerUserRepository.findByUserID(id);
+        newMU.setName(name);
+        newMU.setSubordinateList(subordinateList);
+        newMU.setUncheckedTasksList(uncheckedTasksList);
+        return managerUserRepository.save(newMU);
+    }
+
+    public void deleteById(String id) {
+        managerUserRepository.deleteById(id);
+    }
+
+    public void deleteAll() {
+        managerUserRepository.deleteAll();
+    }
+
     private static final Map<PriorityType, Integer> taskValue = new HashMap<PriorityType, Integer>();
     {
         taskValue.put(PriorityType.URGENT, 10);
@@ -53,6 +94,13 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
+    public void addTaskToUser(User user, Task task) {
+        String i = task.getTaskID();
+        task.setCompleted(false);
+        task.setExecutor(user);
+        user.getLocalUserTaskList().put(i, task);
+    }
+
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
         if ((manager.getLocalUserTaskList().containsKey(task.getTaskID()) || manager.getUncheckedTasksList().containsKey(task.getTaskID())) && manager.getSubordinateList().containsKey(su.getUserID())) { // can assign only OUR employee
             addTaskToUser(su, task);
@@ -75,7 +123,7 @@ public class ManagerTasksService extends UserTasksService {
                 return subordinateUser.getLocalUserTaskList().values().stream().anyMatch(taskPredicate);
             }
         };
-        Map<Integer, SubordinateUser> subList = manager.getSubordinateList();
+        Map<String, SubordinateUser> subList = manager.getSubordinateList();
         return subList.values().stream().filter(subordinateUserPredicate).toArray(SubordinateUser[]::new);
     }
 }
