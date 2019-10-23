@@ -1,3 +1,4 @@
+/*
 package com.company;
 
 import com.company.model.*;
@@ -53,3 +54,4 @@ public class Main {
         Arrays.stream(sUserArray).forEach(i->System.out.println(i.toString()));
     }
 }
+*/
