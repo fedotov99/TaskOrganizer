@@ -16,14 +16,16 @@ public class TaskController {
     private SubordinateTasksService subordinateTasksService;
 
     // create
+    /*
     @PostMapping("/task")
-    public String createTask(@RequestParam String description) {
+    public String createTaskByDescription(@RequestParam String description) {
         Task t = taskService.createTask(description);
         return t.toString();
     }
+    */
 
     @PostMapping("/task")
-    public String createTask(@RequestParam String description, PriorityType priority) {
+    public String createTaskByDescriptionAndPriority(@RequestParam String description, PriorityType priority) {
         Task t = taskService.createTask(description, priority);
         return t.toString();
     }
