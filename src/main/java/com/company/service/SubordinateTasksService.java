@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SubordinateTasksService extends UserTasksService {
@@ -13,6 +14,8 @@ public class SubordinateTasksService extends UserTasksService {
     protected SubordinateUserRepository subordinateUserRepository;
     @Autowired
     private ManagerTasksService managerTasksService;
+    @Autowired
+    private TaskService taskService;
 
     public SubordinateUser createSubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
         SubordinateUser newSU = new SubordinateUser(name, manager, score, position);
@@ -42,6 +45,12 @@ public class SubordinateTasksService extends UserTasksService {
         return subordinateUserRepository.save(newSU);
     }
 
+    public SubordinateUser updateSubordinateUserTaskList(String id, Map<String, Task> localUserTaskList) {
+        SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
+        newSU.setLocalUserTaskList(localUserTaskList);
+        return subordinateUserRepository.save(newSU);
+    }
+
     public SubordinateUser updateSubordinateUserScore(String id, int score) {
         SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
         newSU.setScore(score);
@@ -64,6 +73,27 @@ public class SubordinateTasksService extends UserTasksService {
                 subordinate.getLocalUserTaskList().get(taskID).setCompleted(true);
                 sendRequestForTaskApprovalToManager((SubordinateUser)subordinate, subordinate.getLocalUserTaskList().get(taskID));
                 subordinate.getLocalUserTaskList().remove(taskID);
+
+                // update DB
+                Task nT = taskService.getByTaskID(taskID);
+                nT = taskService.updateTaskReportAndCompleted(taskID, report,true);
+                SubordinateUser newSU = getByUserID(subordinate.getUserID());
+                newSU = updateSubordinateUserTaskList(subordinate.getUserID(), subordinate.getLocalUserTaskList());
+            }
+        } else {
+            System.out.println("Wrong user!");
+        }
+    }
+
+    @Override
+    public void deleteTaskFromLocalUserTaskList(User subordinate, String taskID) {
+        if (subordinate instanceof SubordinateUser) {
+            if (subordinate.getLocalUserTaskList().containsKey(taskID)) {
+                subordinate.getLocalUserTaskList().remove(taskID);
+
+                // update DB
+                SubordinateUser newSU = getByUserID(subordinate.getUserID());
+                newSU = updateSubordinateUserTaskList(subordinate.getUserID(), subordinate.getLocalUserTaskList());
             }
         } else {
             System.out.println("Wrong user!");
@@ -72,7 +102,8 @@ public class SubordinateTasksService extends UserTasksService {
 
     private void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
         managerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
-        deleteTaskFromLocalUserTaskList(subordinate, task.getTaskID()); // thinks that it is ready (until manager doesn't decline)
+        deleteTaskFromLocalUserTaskList(subordinate, task.getTaskID()); // subordinate thinks that task is ready (until manager doesn't decline)
+        // concerning DB update, see deleteTaskFromLocalUserTaskList() method
     }
 
 }
