@@ -2,6 +2,8 @@ package com.company.service;
 
 import com.company.model.*;
 import com.company.repository.ManagerUserRepository;
+import com.company.repository.TaskRepository;
+import jdk.internal.loader.AbstractClassLoaderValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,11 @@ import java.util.HashMap;
 @Service
 public class ManagerTasksService extends UserTasksService {
     @Autowired
-    protected ManagerUserRepository managerUserRepository;
+    private ManagerUserRepository managerUserRepository;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private SubordinateTasksService subordinateTasksService;
 
     public ManagerUser createManagerUser(String name) {
         return managerUserRepository.save(new ManagerUser(name));
@@ -39,6 +45,24 @@ public class ManagerTasksService extends UserTasksService {
         return managerUserRepository.save(newMU);
     }
 
+    public ManagerUser updateManagerUserTaskList(String id, Map<String, Task> localUserTaskList) {
+        ManagerUser newMU = managerUserRepository.findByUserID(id);
+        newMU.setLocalUserTaskList(localUserTaskList);
+        return managerUserRepository.save(newMU);
+    }
+
+    public ManagerUser updateManagerUserSubordinateList(String id, Map<String, SubordinateUser>  subordinateList) {
+        ManagerUser newMU = managerUserRepository.findByUserID(id);
+        newMU.setSubordinateList(subordinateList);
+        return managerUserRepository.save(newMU);
+    }
+
+    public ManagerUser updateManagerUserUncheckedTaskList(String id, Map<String, Task> uncheckedTasksList) {
+        ManagerUser newMU = managerUserRepository.findByUserID(id);
+        newMU.setUncheckedTasksList(uncheckedTasksList);
+        return managerUserRepository.save(newMU);
+    }
+
     public void deleteById(String id) {
         managerUserRepository.deleteById(id);
     }
@@ -56,32 +80,54 @@ public class ManagerTasksService extends UserTasksService {
     }
 
     @Override
-    public void completeTask (User manager, int id, String report) {            // implements abstract method in User
+    public void completeTask (User manager, String taskID, String report) {  // implements abstract method in User
         if (manager instanceof ManagerUser) {
-            if (manager.getLocalUserTaskList().get(id) != null) {
-                manager.getLocalUserTaskList().get(id).setReport(report);
-                manager.getLocalUserTaskList().get(id).setCompleted(true);
-                manager.getLocalUserTaskList().remove(id);
+            if (manager.getLocalUserTaskList().get(taskID) != null) {
+                manager.getLocalUserTaskList().get(taskID).setReport(report);
+                manager.getLocalUserTaskList().get(taskID).setCompleted(true);
+                manager.getLocalUserTaskList().remove(taskID);
+
+                // update DB
+                Task nT = taskService.getByTaskID(taskID);
+                nT = taskService.updateTaskReportAndCompleted(taskID, report,true);
+                ManagerUser newMU = getByUserID(manager.getUserID());
+                newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
         } else {
             System.out.println("Wrong user!");
         }
     }
 
-    protected static void addSubordinateToManager(ManagerUser manager, SubordinateUser su) {
+    protected void addSubordinateToManager(ManagerUser manager, SubordinateUser su) { // suppose that subordinate knows about his manager
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
+
+        // update DB
+        ManagerUser newMU = getByUserID(manager.getUserID());
+        newMU = updateManagerUserSubordinateList(manager.getUserID(), manager.getSubordinateList());
     }
 
-    protected static void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
+    protected void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
         manager.getUncheckedTasksList().putIfAbsent(task.getTaskID(), task);
+
+        // update DB
+        ManagerUser newMU = getByUserID(manager.getUserID());
+        newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
     }
 
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
             if (task.getExecutor() instanceof SubordinateUser) {
                 ((SubordinateUser) task.getExecutor()).setScore(((SubordinateUser) task.getExecutor()).getScore() + taskValue.get(task.getPriority()));
+
+                // update DB
+                SubordinateUser newSU = subordinateTasksService.getByUserID(task.getExecutor().getUserID());
+                newSU = subordinateTasksService.updateSubordinateUserScore(task.getExecutor().getUserID(), ((SubordinateUser) task.getExecutor()).getScore());
             }
             manager.getUncheckedTasksList().remove(task.getTaskID());
+
+            // update DB
+            ManagerUser newMU = getByUserID(manager.getUserID());
+            newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
         }
     }
 

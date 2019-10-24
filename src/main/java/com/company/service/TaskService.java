@@ -51,6 +51,13 @@ public class TaskService {
         return taskRepository.save(nt);
     }
 
+    public Task updateTaskReportAndCompleted(String taskID, String report, Boolean completed) {
+        Task nt = taskRepository.findByTaskID(taskID);
+        nt.setReport(report);
+        nt.setCompleted(completed);
+        return taskRepository.save(nt);
+    }
+
     public void deleteByTaskID(String id) {
         taskRepository.deleteById(id);
     }
@@ -58,4 +65,6 @@ public class TaskService {
     public void deleteAll() {
         taskRepository.deleteAll();
     }
+
+
 }

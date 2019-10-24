@@ -38,6 +38,10 @@ public abstract class User {
         return localUserTaskList;
     }
 
+    public void setLocalUserTaskList(Map<String, Task> localUserTaskList) {
+        this.localUserTaskList = localUserTaskList;
+    }
+
     @Override
     public String toString() {
         return "User{" +

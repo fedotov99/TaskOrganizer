@@ -9,11 +9,11 @@ import java.util.List;
 @Service
 public abstract class UserTasksService {
 
-    public abstract void completeTask (User user, int id, String report);
+    public abstract void completeTask (User user, String taskID, String report);
 
-    public void deleteTask(User user, String id) {
-        if (user.getLocalUserTaskList().containsKey(id)) {
-            user.getLocalUserTaskList().remove(id);
+    public void deleteTask(User user, String taskID) {
+        if (user.getLocalUserTaskList().containsKey(taskID)) {
+            user.getLocalUserTaskList().remove(taskID);
         }
     }
 }

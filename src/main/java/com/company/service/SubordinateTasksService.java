@@ -11,10 +11,12 @@ import java.util.List;
 public class SubordinateTasksService extends UserTasksService {
     @Autowired
     protected SubordinateUserRepository subordinateUserRepository;
+    @Autowired
+    private ManagerTasksService managerTasksService;
 
     public SubordinateUser createSubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
         SubordinateUser newSU = new SubordinateUser(name, manager, score, position);
-        ManagerTasksService.addSubordinateToManager(manager, newSU); // how to process it in database???
+        managerTasksService.addSubordinateToManager(manager, newSU); // how to process it in database???
         return subordinateUserRepository.save(newSU);
     }
 
@@ -36,7 +38,13 @@ public class SubordinateTasksService extends UserTasksService {
         newSU.setManager(manager);
         newSU.setScore(score);
         newSU.setPosition(position);
-        ManagerTasksService.addSubordinateToManager(manager, newSU); // how to process it in database???
+        managerTasksService.addSubordinateToManager(manager, newSU); // how to process it in database???
+        return subordinateUserRepository.save(newSU);
+    }
+
+    public SubordinateUser updateSubordinateUserScore(String id, int score) {
+        SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
+        newSU.setScore(score);
         return subordinateUserRepository.save(newSU);
     }
 
@@ -49,13 +57,13 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     @Override
-    public void completeTask (User subordinate, int id, String report) {            // implements abstract method in User
+    public void completeTask (User subordinate, String taskID, String report) {            // implements abstract method in User
         if (subordinate instanceof SubordinateUser) {
-            if (subordinate.getLocalUserTaskList().get(id) != null) {
-                subordinate.getLocalUserTaskList().get(id).setReport(report);
-                subordinate.getLocalUserTaskList().get(id).setCompleted(true);
-                sendRequestForTaskApprovalToManager((SubordinateUser)subordinate, subordinate.getLocalUserTaskList().get(id));
-                subordinate.getLocalUserTaskList().remove(id);
+            if (subordinate.getLocalUserTaskList().get(taskID) != null) {
+                subordinate.getLocalUserTaskList().get(taskID).setReport(report);
+                subordinate.getLocalUserTaskList().get(taskID).setCompleted(true);
+                sendRequestForTaskApprovalToManager((SubordinateUser)subordinate, subordinate.getLocalUserTaskList().get(taskID));
+                subordinate.getLocalUserTaskList().remove(taskID);
             }
         } else {
             System.out.println("Wrong user!");
@@ -63,7 +71,7 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     private void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
-        ManagerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
+        managerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
         deleteTask(subordinate, task.getTaskID()); // thinks that it is ready (until manager doesn't decline)
     }
 
