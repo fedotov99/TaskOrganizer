@@ -10,9 +10,5 @@ public abstract class UserTasksService {
 
     public abstract void completeTask (User user, String taskID, String report);
 
-    public void deleteTaskFromLocalUserTaskList(User user, String taskID) {
-        if (user.getLocalUserTaskList().containsKey(taskID)) {
-            user.getLocalUserTaskList().remove(taskID);
-        }
-    }
+    public abstract void deleteTaskFromLocalUserTaskList(User user, String taskID);
 }
