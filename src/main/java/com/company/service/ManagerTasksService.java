@@ -94,7 +94,7 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
-    public void addTaskToUser(User user, Task task) {
+    public void addTaskToUser(User user, Task task) {  // both to manager or subordinate. this method can be moved to AdminService e.g.
         String i = task.getTaskID();
         task.setCompleted(false);
         task.setExecutor(user);
