@@ -2,8 +2,6 @@ package com.company.service;
 
 import com.company.model.*;
 import com.company.repository.ManagerUserRepository;
-import com.company.repository.TaskRepository;
-import jdk.internal.loader.AbstractClassLoaderValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -98,6 +96,21 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
+    @Override
+    public void deleteTaskFromLocalUserTaskList(User manager, String taskID) {
+        if (manager instanceof ManagerUser) {
+            if (manager.getLocalUserTaskList().containsKey(taskID)) {
+                manager.getLocalUserTaskList().remove(taskID);
+
+                // update DB
+                ManagerUser newMU = getByUserID(manager.getUserID());
+                newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
+            }
+        } else {
+            System.out.println("Wrong user!");
+        }
+    }
+
     protected void addSubordinateToManager(ManagerUser manager, SubordinateUser su) { // suppose that subordinate knows about his manager
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
 
@@ -135,23 +148,33 @@ public class ManagerTasksService extends UserTasksService {
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
             if (task.getExecutor() instanceof SubordinateUser) {
                 assignTaskToSubordinateOfManager(manager, task, (SubordinateUser)task.getExecutor()); // send back
+                // concerning DB update, see assignTaskToSubordinateOfManager() method
             }
             manager.getUncheckedTasksList().remove(task.getTaskID());
+
+            // update DB
+            ManagerUser newMU = getByUserID(manager.getUserID());
+            newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
         }
     }
 
     public void addTaskToUser(User user, Task task) {  // both to manager or subordinate. this method can be moved to AdminService e.g.
-        String i = task.getTaskID();
         task.setCompleted(false);
         task.setExecutor(user);
-        user.getLocalUserTaskList().put(i, task);
+        user.getLocalUserTaskList().put(task.getTaskID(), task);
+
+        // update DB
+        Task nT = taskService.getByTaskID(task.getTaskID());
+        nT = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user);
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
         if ((manager.getLocalUserTaskList().containsKey(task.getTaskID()) || manager.getUncheckedTasksList().containsKey(task.getTaskID())) && manager.getSubordinateList().containsKey(su.getUserID())) { // can assign only OUR employee
             addTaskToUser(su, task);
+            // concerning DB update, see addTaskToUser() method
         }
-        deleteTask(manager, task.getTaskID()); // sent to subordinate and got rid of this task
+        deleteTaskFromLocalUserTaskList(manager, task.getTaskID()); // sent to subordinate and got rid of this task
+        // concerning DB update, see deleteTaskFromLocalUserTaskList() method
     }
 
     public int getSubordinatesSizeOfManager(ManagerUser manager) {

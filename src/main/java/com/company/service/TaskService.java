@@ -48,6 +48,7 @@ public class TaskService {
         nt.setReport(report);
         nt.setCompleted(completed);
         nt.setPriority(priority);
+        // to update executor, please, use addTaskToUser() method
         return taskRepository.save(nt);
     }
 
@@ -55,6 +56,13 @@ public class TaskService {
         Task nt = taskRepository.findByTaskID(taskID);
         nt.setReport(report);
         nt.setCompleted(completed);
+        return taskRepository.save(nt);
+    }
+
+    public Task updateTaskCompletedAndExecutor(String taskID, Boolean completed, User executor) { // use this method only from addTaskToUser() to prevent problems
+        Task nt = taskRepository.findByTaskID(taskID);
+        nt.setCompleted(completed);
+        nt.setExecutor(executor);
         return taskRepository.save(nt);
     }
 
