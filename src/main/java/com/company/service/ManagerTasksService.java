@@ -111,7 +111,7 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
-    protected void addSubordinateToManager(ManagerUser manager, SubordinateUser su) { // suppose that subordinate knows about his manager
+    public void addSubordinateToManager(ManagerUser manager, SubordinateUser su) { // suppose that subordinate knows about his manager
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
 
         // update DB
@@ -119,7 +119,7 @@ public class ManagerTasksService extends UserTasksService {
         newMU = updateManagerUserSubordinateList(manager.getUserID(), manager.getSubordinateList());
     }
 
-    protected void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
+    public void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
         manager.getUncheckedTasksList().putIfAbsent(task.getTaskID(), task);
 
         // update DB
