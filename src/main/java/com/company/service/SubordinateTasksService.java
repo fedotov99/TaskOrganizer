@@ -100,7 +100,7 @@ public class SubordinateTasksService extends UserTasksService {
         }
     }
 
-    private void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
+    public void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
         managerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
         deleteTaskFromLocalUserTaskList(subordinate, task.getTaskID()); // subordinate thinks that task is ready (until manager doesn't decline)
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
