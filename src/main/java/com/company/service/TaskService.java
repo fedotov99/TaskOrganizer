@@ -73,6 +73,4 @@ public class TaskService {
     public void deleteAll() {
         taskRepository.deleteAll();
     }
-
-
 }

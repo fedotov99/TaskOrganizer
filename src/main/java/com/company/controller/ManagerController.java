@@ -3,7 +3,6 @@ package com.company.controller;
 import com.company.model.ManagerUser;
 import com.company.model.SubordinateUser;
 import com.company.model.Task;
-import com.company.model.User;
 import com.company.service.ManagerTasksService;
 import com.company.service.SubordinateTasksService;
 import com.company.service.TaskService;
