@@ -8,6 +8,9 @@ public class SubordinateUser extends User {
     private int score = 0;
     private PositionType position;
 
+    public SubordinateUser() {
+    }
+
     public SubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
         super(name);
         this.manager = manager;

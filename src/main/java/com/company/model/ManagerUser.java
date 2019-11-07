@@ -11,6 +11,9 @@ public class ManagerUser extends User {
     private Map<String, SubordinateUser>  subordinateList = new HashMap<String, SubordinateUser>();
     private Map<String, Task> uncheckedTasksList = new HashMap<String, Task>(); // requests from sub.
 
+    public ManagerUser() {
+    }
+
     public ManagerUser(String name) {
         super(name);
         // subordinateList = new HashMap<Integer, SubordinateUser>();
