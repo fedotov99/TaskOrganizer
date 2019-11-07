@@ -25,9 +25,15 @@ public class TaskController {
     */
 
     @PostMapping("/task")
-    public String createTaskByDescriptionAndPriority(@RequestParam String description, PriorityType priority) {
+    public Task createTaskByDescriptionAndPriority(@RequestParam String description, @RequestParam PriorityType priority) {
         Task t = taskService.createTask(description, priority);
-        return t.toString();
+        return t;
+    }
+
+    @PostMapping("/task")
+    public Task createTaskByDescription(@RequestParam String description) {
+        Task t = taskService.createTask(description);
+        return t;
     }
 
     // retrieve
@@ -53,8 +59,10 @@ public class TaskController {
     }
 
     @GetMapping("/task")
-    public List<Task> getAllTasks(){
-        return taskService.getAll();
+    public Task[] getAllTasks(){
+        List<Task> taskList = taskService.getAll();
+        Task[] taskArray = taskList.stream().toArray(Task[]::new);
+        return taskArray;
     }
 
     // update
