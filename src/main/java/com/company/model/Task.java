@@ -14,6 +14,9 @@ public class Task {
     private PriorityType priority;
     private User executor = null;
 
+    public Task() {
+    }
+
     public Task(String description) {
         // this.taskID = counter++;
         this.description = description;
