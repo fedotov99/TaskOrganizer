@@ -73,12 +73,14 @@ public class TaskController {
     }
 
     // delete
+    @CrossOrigin("http://localhost:4200")
     @DeleteMapping("/task/{id}")
     public String delete(@PathVariable String id) {
         taskService.deleteByTaskID(id);
         return "Deleted task id: " + id;
     }
 
+    @CrossOrigin("http://localhost:4200")
     @DeleteMapping("/task")
     public String deleteAllTasks(){
         taskService.deleteAll();
