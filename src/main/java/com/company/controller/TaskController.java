@@ -26,6 +26,8 @@ public class TaskController {
 
     @PostMapping("/task")
     public Task createTaskByDescriptionAndPriority(@RequestParam String description, @RequestBody Integer priority) {
+        if(priority == null)
+            priority = 0;
         Task t = taskService.createTask(description, PriorityType.getPriorityType(priority));
         return t;
     }
