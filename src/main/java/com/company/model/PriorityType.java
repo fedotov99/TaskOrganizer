@@ -4,5 +4,9 @@ public enum PriorityType {
     LOW,
     NORMAL,
     HIGH,
-    URGENT
+    URGENT;
+
+    public static PriorityType getPriorityType(Integer index) {
+        return PriorityType.values()[index];
+    }
 }
