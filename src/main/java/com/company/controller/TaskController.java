@@ -44,7 +44,8 @@ public class TaskController {
         return taskService.getByTaskID(id);
     }
 
-    @GetMapping("/task/{description}")
+    // TODO: solve ambiguous mapping
+    /*@GetMapping("/task/{description}")
     public Task getByDescription(@PathVariable String description) {
         return taskService.getByDescription(description);
     }
@@ -52,7 +53,7 @@ public class TaskController {
     @GetMapping("/task/{priority")
     public List<Task> getByPriority(@PathVariable PriorityType priority) {
         return taskService.getByPriority(priority);
-    }
+    }*/
 
     @GetMapping("/task/byUser/{executorID}")
     public List<Task> getByExecutor(@PathVariable String executorID) {
@@ -65,22 +66,26 @@ public class TaskController {
         return taskService.getAll();
     }
 
-    // update
+/*    // update
     @PutMapping("/task/{id}")
-    public String updateTask(@PathVariable("id") String taskID, @RequestParam String description, @RequestParam String report, @RequestParam Boolean completed, @RequestParam PriorityType priority) {
-        Task t = taskService.updateTask(taskID, description, report, completed, priority);
-        return t.toString();
+    public Task updateTask(@PathVariable String id, @RequestBody String description, @RequestBody String report, @RequestBody Boolean completed, @RequestBody Integer priority) {
+        Task t = taskService.updateTask(id, description, report, completed, PriorityType.getPriorityType(priority));
+        return t;
+    }*/
+
+    @PutMapping("/task/{id}")
+    public Task updateTask(@PathVariable String id, @RequestBody Task task) {
+        Task t = taskService.updateTask(id, task.getDescription(), task.getReport(), task.isCompleted(), task.getPriority());
+        return t;
     }
 
     // delete
-    @CrossOrigin("http://localhost:4200")
     @DeleteMapping("/task/{id}")
     public String delete(@PathVariable String id) {
         taskService.deleteByTaskID(id);
         return "Deleted task id: " + id;
     }
 
-    @CrossOrigin("http://localhost:4200")
     @DeleteMapping("/task")
     public String deleteAllTasks(){
         taskService.deleteAll();
