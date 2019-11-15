@@ -20,9 +20,9 @@ public class SubordinateController {
 
     // create
     @PostMapping("/subordinate")
-    public String createSubordinateUser(@RequestBody SubordinateUser subordinate) {
+    public SubordinateUser createSubordinateUser(@RequestBody SubordinateUser subordinate) {
         SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getManager(), subordinate.getScore(), subordinate.getPosition());
-        return su.toString();
+        return su;
     }
 
     // retrieve
