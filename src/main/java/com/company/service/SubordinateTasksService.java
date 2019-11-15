@@ -19,7 +19,7 @@ public class SubordinateTasksService extends UserTasksService {
 
     public SubordinateUser createSubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
         SubordinateUser newSU = new SubordinateUser(name, manager, score, position);
-        managerTasksService.addSubordinateToManager(manager, newSU); // how to process it in database???
+        managerTasksService.addSubordinateToManager(manager, newSU);
         return subordinateUserRepository.save(newSU);
     }
 
