@@ -68,6 +68,8 @@ public class ManagerController {
         return "Deleted all managers";
     }
 
+    // add task to manager
+
     @RequestMapping("/manager/{id}/complete")
     public String completeTask(@PathVariable("id") String managerID, @RequestParam String taskID, @RequestParam String report) {
         ManagerUser mU = managerTasksService.getByUserID(managerID);
