@@ -20,8 +20,8 @@ public class SubordinateController {
 
     // create
     @PostMapping("/subordinate")
-    public String createSubordinateUser(@RequestParam String name, @RequestParam ManagerUser manager, @RequestParam int score, @RequestParam PositionType position) {
-        SubordinateUser su = subordinateTasksService.createSubordinateUser(name, manager, score, position);
+    public String createSubordinateUser(@RequestBody SubordinateUser subordinate) {
+        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getManager(), subordinate.getScore(), subordinate.getPosition());
         return su.toString();
     }
 
@@ -43,9 +43,9 @@ public class SubordinateController {
 
     // update
     @PutMapping("/subordinate/{id}")
-    public String updateSubordinateUser(@PathVariable String id, @RequestParam String name, @RequestParam ManagerUser manager, @RequestParam int score, @RequestParam PositionType position) {
-        SubordinateUser su = subordinateTasksService.updateSubordinateUser(id, name, manager, score, position);
-        return su.toString();
+    public SubordinateUser updateSubordinateUser(@PathVariable String id, @RequestBody SubordinateUser subordinate) {
+        SubordinateUser su = subordinateTasksService.updateSubordinateUser(id, subordinate.getName(), subordinate.getManager(), subordinate.getScore(), subordinate.getPosition());
+        return su;
     }
 
     // delete
