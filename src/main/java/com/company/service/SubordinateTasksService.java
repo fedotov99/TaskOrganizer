@@ -1,6 +1,7 @@
 package com.company.service;
 
 import com.company.model.*;
+import com.company.repository.ManagerUserRepository;
 import com.company.repository.SubordinateUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,19 @@ public class SubordinateTasksService extends UserTasksService {
     @Autowired
     protected SubordinateUserRepository subordinateUserRepository;
     @Autowired
+    protected ManagerUserRepository managerUserRepository;
+    @Autowired
     private ManagerTasksService managerTasksService;
     @Autowired
     private TaskService taskService;
 
-    public SubordinateUser createSubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
-        SubordinateUser newSU = new SubordinateUser(name, manager, score, position);
+    // TODO: what if receive manager ID instead of manager object and then retrieve him from repository?
+    public SubordinateUser createSubordinateUser(String name, String managerID, int score, PositionType position) {
+        ManagerUser manager = managerUserRepository.findByUserID(managerID);
+        // if not to save here, than newSU's ID will be null, and NPE:
+        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, manager, score, position));
         managerTasksService.addSubordinateToManager(manager, newSU);
-        return subordinateUserRepository.save(newSU);
+        return newSU; //subordinateUserRepository.save(newSU);
     }
 
     public SubordinateUser getByUserID(String id) {
