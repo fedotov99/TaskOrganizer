@@ -14,8 +14,6 @@ public class SubordinateTasksService extends UserTasksService {
     @Autowired
     protected SubordinateUserRepository subordinateUserRepository;
     @Autowired
-    protected ManagerUserRepository managerUserRepository;
-    @Autowired
     private ManagerTasksService managerTasksService;
     @Autowired
     private TaskService taskService;
@@ -24,7 +22,7 @@ public class SubordinateTasksService extends UserTasksService {
     public SubordinateUser createSubordinateUser(String name, String managerID, int score, PositionType position) {
         // if not to save here, than newSU's ID will be null, and NPE:
         SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, managerID, score, position));
-        ManagerUser manager = managerUserRepository.findByUserID(managerID);
+        ManagerUser manager = managerTasksService.getByUserID(managerID);
         managerTasksService.addSubordinateToManager(manager, newSU);
         return newSU;
     }
@@ -47,7 +45,7 @@ public class SubordinateTasksService extends UserTasksService {
         newSU.setManagerID(managerID);
         newSU.setScore(score);
         newSU.setPosition(position);
-        ManagerUser manager = managerUserRepository.findByUserID(managerID);
+        ManagerUser manager = managerTasksService.getByUserID(managerID);
         managerTasksService.addSubordinateToManager(manager, newSU);
         return subordinateUserRepository.save(newSU);
     }
@@ -108,7 +106,7 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     public void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
-        ManagerUser manager = managerUserRepository.findByUserID(subordinate.getManagerID());
+        ManagerUser manager = managerTasksService.getByUserID(subordinate.getManagerID());
         managerTasksService.addToUncheckedTasksListOfManager(manager, task);
         deleteTaskFromLocalUserTaskList(subordinate, task.getTaskID()); // subordinate thinks that task is ready (until manager doesn't decline)
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
