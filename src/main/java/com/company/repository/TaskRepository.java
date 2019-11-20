@@ -12,5 +12,5 @@ public interface TaskRepository extends MongoRepository<Task, String> {
     public Task findByTaskID(String id);
     public Task findByDescription(String description);
     public List<Task> findByPriority(PriorityType priority);
-    public List<Task> findByExecutor(User executor);
+    public List<Task> findByExecutorID(String executor);
 }

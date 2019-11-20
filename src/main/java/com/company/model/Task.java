@@ -7,24 +7,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Task {
     @Id
     private String taskID;
-    private static int counter = 1;
     private String description;
     private String report = ""; // special public method of User's derived classes will set report (when complete task)
     private boolean completed = false;
     private PriorityType priority;
-    private User executor = null;
+    // Found cycle for field 'executor' in type 'Task' for path 'localUserTaskList -> executor -> localUserTaskList'
+    // private User executor = null;
+    private String executorID;
 
     public Task() {
     }
 
     public Task(String description) {
-        // this.taskID = counter++;
         this.description = description;
         this.priority = PriorityType.NORMAL;
     }
 
     public Task(String description, PriorityType priority) {
-        // this.taskID = counter++;
         this.description = description;
         this.report = "";
         this.completed = false;
@@ -67,12 +66,12 @@ public class Task {
         this.priority = priority;
     }
 
-    public User getExecutor() {
-        return executor;
+    public String getExecutorID() {
+        return executorID;
     }
 
-    public void setExecutor(User executor) {
-        this.executor = executor;
+    public void setExecutorID(String executorID) {
+        this.executorID = executorID;
     }
 
     @Override

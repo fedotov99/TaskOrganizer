@@ -27,6 +27,7 @@ public class ManagerTasksService extends UserTasksService {
         return managerUserRepository.findByUserID(id);
     }
 
+    // TODO: List<ManagerUser>
     public ManagerUser getByName(String name) {
         return managerUserRepository.findByName(name);
     }
@@ -129,13 +130,12 @@ public class ManagerTasksService extends UserTasksService {
 
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
-            if (task.getExecutor() instanceof SubordinateUser) {
-                ((SubordinateUser) task.getExecutor()).setScore(((SubordinateUser) task.getExecutor()).getScore() + taskValue.get(task.getPriority()));
+            SubordinateUser subordinateUser = subordinateTasksService.getByUserID(task.getExecutorID());
+            subordinateUser.setScore(subordinateUser.getScore() + taskValue.get(task.getPriority()));
 
-                // update DB
-                SubordinateUser newSU = subordinateTasksService.getByUserID(task.getExecutor().getUserID());
-                newSU = subordinateTasksService.updateSubordinateUserScore(task.getExecutor().getUserID(), ((SubordinateUser) task.getExecutor()).getScore());
-            }
+            // update DB
+            subordinateUser = subordinateTasksService.updateSubordinateUserScore(subordinateUser.getUserID(), subordinateUser.getScore());
+
             manager.getUncheckedTasksList().remove(task.getTaskID());
 
             // update DB
@@ -146,10 +146,10 @@ public class ManagerTasksService extends UserTasksService {
 
     public void declineTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) { // changes requested
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
-            if (task.getExecutor() instanceof SubordinateUser) {
-                assignTaskToSubordinateOfManager(manager, task, (SubordinateUser)task.getExecutor()); // send back
-                // concerning DB update, see assignTaskToSubordinateOfManager() method
-            }
+            SubordinateUser subordinateUser = subordinateTasksService.getByUserID(task.getExecutorID());
+            assignTaskToSubordinateOfManager(manager, task, subordinateUser); // send back
+            // concerning DB update, see assignTaskToSubordinateOfManager() method
+
             manager.getUncheckedTasksList().remove(task.getTaskID());
 
             // update DB
@@ -160,12 +160,12 @@ public class ManagerTasksService extends UserTasksService {
 
     public void addTaskToUser(User user, Task task) {  // both to manager or subordinate. this method can be moved to AdminService e.g.
         task.setCompleted(false);
-        task.setExecutor(user);
+        task.setExecutorID(user.getUserID());
         user.getLocalUserTaskList().put(task.getTaskID(), task);
 
         // update DB
         Task nT = taskService.getByTaskID(task.getTaskID());
-        nT = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user);
+        nT = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user.getUserID());
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {

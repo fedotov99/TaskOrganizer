@@ -58,7 +58,7 @@ public class TaskController {
     @GetMapping("/task/byUser/{executorID}")
     public List<Task> getByExecutor(@PathVariable String executorID) {
         SubordinateUser executor = subordinateTasksService.getByUserID(executorID);
-        return taskService.getByExecutor(executor);
+        return taskService.getByExecutorID(executor.getUserID());
     }
 
     @GetMapping("/task")

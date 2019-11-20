@@ -26,6 +26,7 @@ public class TaskService {
         return taskRepository.findByTaskID(id);
     }
 
+    // TODO: List<Task>
     public Task getByDescription(String description) {
         return taskRepository.findByDescription(description);
     }
@@ -34,8 +35,8 @@ public class TaskService {
         return taskRepository.findByPriority(priority);
     }
 
-    public List<Task> getByExecutor(User executor){
-        return taskRepository.findByExecutor(executor);
+    public List<Task> getByExecutorID(String executorID){
+        return taskRepository.findByExecutorID(executorID);
     }
 
     public List<Task> getAll(){
@@ -59,10 +60,10 @@ public class TaskService {
         return taskRepository.save(nt);
     }
 
-    public Task updateTaskCompletedAndExecutor(String taskID, Boolean completed, User executor) { // use this method only from addTaskToUser() to prevent problems
+    public Task updateTaskCompletedAndExecutor(String taskID, Boolean completed, String executorID) { // use this method only from addTaskToUser() to prevent problems
         Task nt = taskRepository.findByTaskID(taskID);
         nt.setCompleted(completed);
-        nt.setExecutor(executor);
+        nt.setExecutorID(executorID);
         return taskRepository.save(nt);
     }
 
