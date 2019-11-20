@@ -26,8 +26,7 @@ public class TaskService {
         return taskRepository.findByTaskID(id);
     }
 
-    // TODO: List<Task>
-    public Task getByDescription(String description) {
+    public List<Task> getByDescription(String description) {
         return taskRepository.findByDescription(description);
     }
 

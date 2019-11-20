@@ -27,8 +27,7 @@ public class ManagerTasksService extends UserTasksService {
         return managerUserRepository.findByUserID(id);
     }
 
-    // TODO: List<ManagerUser>
-    public ManagerUser getByName(String name) {
+    public List<ManagerUser> getByName(String name) {
         return managerUserRepository.findByName(name);
     }
 
