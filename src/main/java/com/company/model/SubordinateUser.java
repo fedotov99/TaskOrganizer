@@ -4,27 +4,28 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class SubordinateUser extends User {
-    private ManagerUser manager;
+    // Found cycle for field 'subordinateList' in type 'ManagerUser' for path 'manager -> subordinateList -> manager'
+    // private ManagerUser manager;
+    private String managerID;
     private int score = 0;
     private PositionType position;
 
     public SubordinateUser() {
     }
 
-    public SubordinateUser(String name, ManagerUser manager, int score, PositionType position) {
+    public SubordinateUser(String name, String managerID, int score, PositionType position) {
         super(name);
-        this.manager = manager;
+        this.managerID = managerID;
         this.score = score;
         this.position = position;
-        // how to call automatically for this created object ManagerTasksService::addSubordinateToManager() ?
     }
 
-    public ManagerUser getManager() {
-        return manager;
+    public String getManagerID() {
+        return managerID;
     }
 
-    public void setManager(ManagerUser manager) {
-        this.manager = manager;
+    public void setManagerID(String managerID) {
+        this.managerID = managerID;
     }
 
     public int getScore() {

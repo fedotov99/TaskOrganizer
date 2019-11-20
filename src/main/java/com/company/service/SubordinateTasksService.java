@@ -22,11 +22,11 @@ public class SubordinateTasksService extends UserTasksService {
 
     // TODO: what if receive manager ID instead of manager object and then retrieve him from repository?
     public SubordinateUser createSubordinateUser(String name, String managerID, int score, PositionType position) {
-        ManagerUser manager = managerUserRepository.findByUserID(managerID);
         // if not to save here, than newSU's ID will be null, and NPE:
-        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, manager, score, position));
+        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, managerID, score, position));
+        ManagerUser manager = managerUserRepository.findByUserID(managerID);
         managerTasksService.addSubordinateToManager(manager, newSU);
-        return newSU; //subordinateUserRepository.save(newSU);
+        return newSU;
     }
 
     public SubordinateUser getByUserID(String id) {
@@ -41,13 +41,14 @@ public class SubordinateTasksService extends UserTasksService {
         return subordinateUserRepository.findAll();
     }
 
-    public SubordinateUser updateSubordinateUser(String id, String name, ManagerUser manager, int score, PositionType position) {
+    public SubordinateUser updateSubordinateUser(String id, String name, String managerID, int score, PositionType position) {
         SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
         newSU.setName(name);
-        newSU.setManager(manager);
+        newSU.setManagerID(managerID);
         newSU.setScore(score);
         newSU.setPosition(position);
-        managerTasksService.addSubordinateToManager(manager, newSU); // how to process it in database???
+        ManagerUser manager = managerUserRepository.findByUserID(managerID);
+        managerTasksService.addSubordinateToManager(manager, newSU);
         return subordinateUserRepository.save(newSU);
     }
 
@@ -72,7 +73,7 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     @Override
-    public void completeTask (User subordinate, String taskID, String report) {            // implements abstract method in User
+    public void completeTask (User subordinate, String taskID, String report) {  // implements abstract method in User
         if (subordinate instanceof SubordinateUser) {
             if (subordinate.getLocalUserTaskList().get(taskID) != null) {
                 subordinate.getLocalUserTaskList().get(taskID).setReport(report);
@@ -107,7 +108,8 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     public void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
-        managerTasksService.addToUncheckedTasksListOfManager(subordinate.getManager(), task);
+        ManagerUser manager = managerUserRepository.findByUserID(subordinate.getManagerID());
+        managerTasksService.addToUncheckedTasksListOfManager(manager, task);
         deleteTaskFromLocalUserTaskList(subordinate, task.getTaskID()); // subordinate thinks that task is ready (until manager doesn't decline)
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
     }

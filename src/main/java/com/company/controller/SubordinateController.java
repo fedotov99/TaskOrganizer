@@ -1,7 +1,5 @@
 package com.company.controller;
 
-import com.company.model.ManagerUser;
-import com.company.model.PositionType;
 import com.company.model.SubordinateUser;
 import com.company.model.Task;
 import com.company.service.SubordinateTasksService;
@@ -20,6 +18,7 @@ public class SubordinateController {
 
     // create
     @PostMapping("/subordinate")
+    // TODO: get rid of @RequestParam String managerID, because it is in body
     public SubordinateUser createSubordinateUser(@RequestParam String managerID, @RequestBody SubordinateUser subordinate) {
         SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), managerID, subordinate.getScore(), subordinate.getPosition());
         return su;
@@ -44,7 +43,7 @@ public class SubordinateController {
     // update
     @PutMapping("/subordinate/{id}")
     public SubordinateUser updateSubordinateUser(@PathVariable String id, @RequestBody SubordinateUser subordinate) {
-        SubordinateUser su = subordinateTasksService.updateSubordinateUser(id, subordinate.getName(), subordinate.getManager(), subordinate.getScore(), subordinate.getPosition());
+        SubordinateUser su = subordinateTasksService.updateSubordinateUser(id, subordinate.getName(), subordinate.getManagerID(), subordinate.getScore(), subordinate.getPosition());
         return su;
     }
 
