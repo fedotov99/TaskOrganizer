@@ -1,5 +1,6 @@
 package com.company.service;
 
+import com.company.model.ManagerUser;
 import com.company.model.PriorityType;
 import com.company.model.Task;
 import com.company.model.User;
@@ -13,6 +14,10 @@ import java.util.List;
 public class TaskService {
     @Autowired
     protected TaskRepository taskRepository;
+    @Autowired
+    protected ManagerTasksService managerTasksService;
+    @Autowired
+    protected SubordinateTasksService subordinateTasksService;
 
     public Task createTask(String description) {
         return taskRepository.save(new Task(description));
@@ -20,7 +25,13 @@ public class TaskService {
 
     public Task createTask(String description, PriorityType priority, String executorID) {
         Task t = new Task(description, priority);
-        t.setExecutorID(executorID);
+
+        User executor = managerTasksService.getByUserID(executorID);
+        if (executor == null)
+            executor = subordinateTasksService.getByUserID(executorID);
+
+        managerTasksService.addTaskToUser(executor, t);
+
         return taskRepository.save(t);
     }
 
