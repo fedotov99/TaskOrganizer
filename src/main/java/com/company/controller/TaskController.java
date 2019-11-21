@@ -24,6 +24,7 @@ public class TaskController {
     }
     */
 
+    // TODO: receive executorID as a parameter
     @PostMapping("/task")
     public Task createTaskByDescriptionAndPriority(@RequestParam String description, @RequestBody Integer priority) {
         if(priority == null)
@@ -57,8 +58,7 @@ public class TaskController {
 
     @GetMapping("/task/byUser/{executorID}")
     public List<Task> getByExecutor(@PathVariable String executorID) {
-        SubordinateUser executor = subordinateTasksService.getByUserID(executorID);
-        return taskService.getByExecutorID(executor.getUserID());
+        return taskService.getByExecutorID(executorID);
     }
 
     @GetMapping("/task")
