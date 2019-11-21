@@ -18,8 +18,10 @@ public class TaskService {
         return taskRepository.save(new Task(description));
     }
 
-    public Task createTask(String description, PriorityType priority) {
-        return taskRepository.save(new Task(description, priority));
+    public Task createTask(String description, PriorityType priority, String executorID) {
+        Task t = new Task(description, priority);
+        t.setExecutorID(executorID);
+        return taskRepository.save(t);
     }
 
     public Task getByTaskID(String id) {

@@ -24,10 +24,9 @@ public class TaskController {
     }
     */
 
-    // TODO: receive executorID as a parameter
     @PostMapping("/task")
     public Task createTaskByDescriptionAndPriority(@RequestBody Task task) {
-        Task t = taskService.createTask(task.getDescription(), task.getPriority());
+        Task t = taskService.createTask(task.getDescription(), task.getPriority(), task.getExecutorID());
         return t;
     }
 
