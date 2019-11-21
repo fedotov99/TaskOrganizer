@@ -170,8 +170,11 @@ public class ManagerTasksService extends UserTasksService {
         user.getLocalUserTaskList().put(task.getTaskID(), task);
 
         // update DB
-        Task nT = taskService.getByTaskID(task.getTaskID());
-        nT = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user.getUserID());
+        if (user instanceof ManagerUser)
+            user = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList());
+        else if (user instanceof SubordinateUser)
+            user = subordinateTasksService.updateSubordinateUserTaskList(user.getUserID(), user.getLocalUserTaskList());
+        task = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user.getUserID());
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
