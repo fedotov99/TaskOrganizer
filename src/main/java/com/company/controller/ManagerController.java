@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class ManagerController {
@@ -92,12 +91,18 @@ public class ManagerController {
         return "Added subordinate " + subordinateID + " to manager " + managerID;
     }
 
-    @RequestMapping("/manager/{id}/addToUnchecked")
+    // TODO: why is this controller for? Subordinates already have "send request for task approval" controller
+/*    @RequestMapping("/manager/{id}/addToUnchecked")
     public String addToUncheckedTasksListOfManager(@PathVariable("id") String managerID, @RequestParam String taskID) {
         ManagerUser mU = managerTasksService.getByUserID(managerID);
         Task t = taskService.getByTaskID(taskID);
         managerTasksService.addToUncheckedTasksListOfManager(mU, t);
         return "Added task " + taskID + " to unchecked task list of manager " + managerID;
+    }*/
+
+    @GetMapping("/manager/{id}/getUncheckedTaskList")
+    public List<Task> getUncheckedTaskList(@PathVariable String id) {
+        return managerTasksService.getUncheckedTaskList(id);
     }
 
     @RequestMapping("/manager/{id}/approveTask")

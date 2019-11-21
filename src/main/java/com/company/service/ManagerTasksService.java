@@ -5,6 +5,7 @@ import com.company.repository.ManagerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -117,6 +118,12 @@ public class ManagerTasksService extends UserTasksService {
         // update DB
         ManagerUser newMU = getByUserID(manager.getUserID());
         newMU = updateManagerUserSubordinateList(manager.getUserID(), manager.getSubordinateList());
+    }
+
+    public List<Task> getUncheckedTaskList(String managerID) {
+        ManagerUser manager = getByUserID(managerID);
+        Map<String, Task> uncheckedTasksList = manager.getUncheckedTasksList();
+        return new LinkedList<>(uncheckedTasksList.values());
     }
 
     public void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
