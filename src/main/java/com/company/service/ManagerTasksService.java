@@ -120,6 +120,12 @@ public class ManagerTasksService extends UserTasksService {
         newMU = updateManagerUserSubordinateList(manager.getUserID(), manager.getSubordinateList());
     }
 
+    public List<Task> getManagerTaskList(String managerID) {
+        ManagerUser manager = getByUserID(managerID);
+        Map<String, Task> managerTasksList = manager.getLocalUserTaskList();
+        return new LinkedList<>(managerTasksList.values());
+    }
+
     public List<Task> getUncheckedTaskList(String managerID) {
         ManagerUser manager = getByUserID(managerID);
         Map<String, Task> uncheckedTasksList = manager.getUncheckedTasksList();

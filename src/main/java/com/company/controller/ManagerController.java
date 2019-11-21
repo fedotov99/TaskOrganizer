@@ -100,6 +100,11 @@ public class ManagerController {
         return "Added task " + taskID + " to unchecked task list of manager " + managerID;
     }*/
 
+    @GetMapping("/manager/{id}/getManagerTaskList")
+    public List<Task> getManagerTaskList(@PathVariable String id) {
+        return managerTasksService.getManagerTaskList(id);
+    }
+
     @GetMapping("/manager/{id}/getUncheckedTaskList")
     public List<Task> getUncheckedTaskList(@PathVariable String id) {
         return managerTasksService.getUncheckedTaskList(id);
