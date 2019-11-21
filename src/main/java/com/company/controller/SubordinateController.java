@@ -61,10 +61,10 @@ public class SubordinateController {
     }
 
     @RequestMapping("/subordinate/{id}/complete")
-    public String completeTask(@PathVariable("id") String subordinateID, @RequestParam String taskID, @RequestParam String report) {
+    public String completeTask(@PathVariable("id") String subordinateID, @RequestBody Task task) {
         SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
-        subordinateTasksService.completeTask(sU, taskID, report);
-        return "Completed task " + taskID;
+        subordinateTasksService.completeTask(sU, task.getTaskID(), task.getReport());
+        return "Completed task " + task.getTaskID();
     }
 
     @RequestMapping("/subordinate/{id}/delete")
