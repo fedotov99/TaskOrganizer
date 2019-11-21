@@ -6,6 +6,7 @@ import com.company.repository.SubordinateUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +104,12 @@ public class SubordinateTasksService extends UserTasksService {
         } else {
             System.out.println("Wrong user!");
         }
+    }
+
+    public List<Task> getSubordinateTaskList(String subordinateID) {
+        SubordinateUser subordinate = getByUserID(subordinateID);
+        Map<String, Task> subordinateTasksList = subordinate.getLocalUserTaskList();
+        return new LinkedList<>(subordinateTasksList.values());
     }
 
     public void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {

@@ -74,6 +74,11 @@ public class SubordinateController {
         return "Deleted task " + taskID;
     }
 
+    @GetMapping("/subordinate/{id}/getSubordinateTaskList")
+    public List<Task> getSubordinateTaskList(@PathVariable String id) {
+        return subordinateTasksService.getSubordinateTaskList(id);
+    }
+
     // TODO: this controller becomes redundant due to completeTask controller
 /*    @RequestMapping("/subordinate/{id}/sendRequestToManager")
     public String sendRequestForTaskApprovalToManager(@PathVariable("id") String subordinateID, @RequestParam String taskID) {
