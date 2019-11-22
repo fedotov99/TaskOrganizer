@@ -119,6 +119,11 @@ public class ManagerController {
         return managerTasksService.getUncheckedTaskList(id);
     }
 
+    @GetMapping("/manager/{id}/getSubordinateList")
+    public List<SubordinateUser> getSubordinateList(@PathVariable String id) {
+        return managerTasksService.getSubordinateList(id);
+    }
+
     @RequestMapping("/manager/{id}/approveTask")
     public String approveTaskInUncheckedTasksListOfManager(@PathVariable("id") String managerID, @RequestParam String taskID) {
         ManagerUser mU = managerTasksService.getByUserID(managerID);
