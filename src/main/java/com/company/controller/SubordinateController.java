@@ -33,10 +33,11 @@ public class SubordinateController {
         return subordinateTasksService.getByUserID(id);
     }
 
-    @GetMapping("/subordinate/{name}")
+    // TODO: solve ambiguous mapping
+/*    @GetMapping("/subordinate/{name}")
     public SubordinateUser getSubordinateUserByName(@PathVariable String name) {
         return subordinateTasksService.getByName(name);
-    }
+    }*/
 
     @GetMapping("/subordinate")
     public List<SubordinateUser> getAllSubordinates(){
