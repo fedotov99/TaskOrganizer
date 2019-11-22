@@ -8,6 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+// ATTENTION! It is not recommended to call methods of this controller, because it works with all tasks in database,
+// without syncing with local user's data structures (localUserTasksList), except for task creating method,
+// which adds task to localUserTasksList just after task has been created in DB.
+// This controller can be helpful for admin dashboard (if it is needed) or testing,
+// but if we work with user's account, we should call specific user controller's methods
+// to be sure that user's local data structures are always up to date.
 @RestController
 public class TaskController {
     @Autowired
