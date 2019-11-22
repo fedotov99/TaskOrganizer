@@ -72,6 +72,23 @@ public class SubordinateTasksService extends UserTasksService {
     }
 
     @Override
+    public void updateTaskInLocalUserTaskList(User user, String taskID) {
+        if (user instanceof SubordinateUser) {
+            if (user.getLocalUserTaskList().containsKey(taskID)) {
+                user.getLocalUserTaskList().remove(taskID);
+                Task t = taskService.getByTaskID(taskID);
+                user.getLocalUserTaskList().put(t.getTaskID(), t);
+
+                // update DB
+                SubordinateUser newSU = getByUserID(user.getUserID());
+                newSU = updateSubordinateUserTaskList(user.getUserID(), user.getLocalUserTaskList());
+            }
+        } else {
+            System.out.println("Wrong user!");
+        }
+    }
+
+    @Override
     public void completeTask (User subordinate, String taskID, String report) {  // implements abstract method in User
         if (subordinate instanceof SubordinateUser) {
             if (subordinate.getLocalUserTaskList().get(taskID) != null) {

@@ -79,6 +79,23 @@ public class ManagerTasksService extends UserTasksService {
     }
 
     @Override
+    public void updateTaskInLocalUserTaskList(User user, String taskID) {
+        if (user instanceof ManagerUser) {
+            if (user.getLocalUserTaskList().containsKey(taskID)) {
+                user.getLocalUserTaskList().remove(taskID);
+                Task t = taskService.getByTaskID(taskID);
+                user.getLocalUserTaskList().put(t.getTaskID(), t);
+
+                // update DB
+                ManagerUser newMU = getByUserID(user.getUserID());
+                newMU = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList());
+            }
+        } else {
+            System.out.println("Wrong user!");
+        }
+    }
+
+    @Override
     public void completeTask (User manager, String taskID, String report) {  // implements abstract method in User
         if (manager instanceof ManagerUser) {
             if (manager.getLocalUserTaskList().get(taskID) != null) {

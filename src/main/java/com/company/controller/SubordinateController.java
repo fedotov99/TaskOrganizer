@@ -2,6 +2,7 @@ package com.company.controller;
 
 import com.company.model.SubordinateUser;
 import com.company.model.Task;
+import com.company.service.ManagerTasksService;
 import com.company.service.SubordinateTasksService;
 import com.company.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import java.util.List;
 public class SubordinateController {
     @Autowired
     private SubordinateTasksService subordinateTasksService;
+    @Autowired
+    private ManagerTasksService managerTasksService;
     @Autowired
     private TaskService taskService;
 
@@ -58,6 +61,15 @@ public class SubordinateController {
     public String deleteAllSubordinates(){
         subordinateTasksService.deleteAll();
         return "Deleted all subordinates";
+    }
+
+    @PutMapping("/subordinate/{id}/update")
+    public Task updateTask(@PathVariable("id") String subordinateID, @RequestBody Task task) {
+        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        // first update task in DB, second update task in localUserTaskList
+        Task t = taskService.updateTask(task.getTaskID(), task.getDescription(), task.getReport(), task.isCompleted(), task.getPriority());
+        subordinateTasksService.updateTaskInLocalUserTaskList(sU, task.getTaskID());
+        return t;
     }
 
     @RequestMapping("/subordinate/{id}/complete")

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class UserTasksService {
 
+    public abstract void updateTaskInLocalUserTaskList (User user, String taskID);
+
     public abstract void completeTask (User user, String taskID, String report);
 
     public abstract void deleteTaskFromLocalUserTaskList(User user, String taskID);

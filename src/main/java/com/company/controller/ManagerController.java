@@ -67,7 +67,14 @@ public class ManagerController {
         return "Deleted all managers";
     }
 
-    // add task to manager
+    @PutMapping("/manager/{id}/update")
+    public Task updateTask(@PathVariable("id") String managerID, @RequestBody Task task) {
+        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        // first update task in DB, second update task in localUserTaskList
+        Task t = taskService.updateTask(task.getTaskID(), task.getDescription(), task.getReport(), task.isCompleted(), task.getPriority());
+        managerTasksService.updateTaskInLocalUserTaskList(mU, task.getTaskID());
+        return t;
+    }
 
     @RequestMapping("/manager/{id}/complete")
     public String completeTask(@PathVariable("id") String managerID, @RequestParam String taskID, @RequestParam String report) {
@@ -79,7 +86,9 @@ public class ManagerController {
     @RequestMapping("/manager/{id}/delete")
     public String deleteTask(@PathVariable("id") String managerID, @RequestParam String taskID) {
         ManagerUser mU = managerTasksService.getByUserID(managerID);
+        // first delete from local user task list, then delete from DB
         managerTasksService.deleteTaskFromLocalUserTaskList(mU, taskID);
+        taskService.deleteByTaskID(taskID);
         return "Deleted task " + taskID;
     }
 
