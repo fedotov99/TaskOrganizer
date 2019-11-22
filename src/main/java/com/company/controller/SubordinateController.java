@@ -70,7 +70,9 @@ public class SubordinateController {
     @RequestMapping("/subordinate/{id}/delete")
     public String deleteTask(@PathVariable("id") String subordinateID, @RequestParam String taskID) {
         SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        // first delete from local user task list, then delete from DB
         subordinateTasksService.deleteTaskFromLocalUserTaskList(sU, taskID);
+        taskService.deleteByTaskID(taskID);
         return "Deleted task " + taskID;
     }
 
