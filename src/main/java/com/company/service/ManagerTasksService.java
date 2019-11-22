@@ -170,6 +170,8 @@ public class ManagerTasksService extends UserTasksService {
 
             // update DB
             subordinateUser = subordinateTasksService.updateSubordinateUserScore(subordinateUser.getUserID(), subordinateUser.getScore());
+            // in order to sync subordinate's score, update it in object
+            updateSubordinateScoreInSubordinateList(manager.getUserID(), subordinateUser.getUserID());
 
             manager.getUncheckedTasksList().remove(task.getTaskID());
 
@@ -177,6 +179,13 @@ public class ManagerTasksService extends UserTasksService {
             ManagerUser newMU = getByUserID(manager.getUserID());
             newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
         }
+    }
+
+    public void updateSubordinateScoreInSubordinateList(String managerID, String subordinateID) {
+        ManagerUser manager = getByUserID(managerID);
+        SubordinateUser subordinate = subordinateTasksService.getByUserID(subordinateID);
+        manager.getSubordinateList().get(subordinateID).setScore(subordinate.getScore());
+        manager = updateManagerUserSubordinateList(managerID, manager.getSubordinateList());
     }
 
     public void declineTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) { // changes requested
