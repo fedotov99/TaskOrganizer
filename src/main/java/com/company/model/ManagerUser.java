@@ -20,6 +20,10 @@ public class ManagerUser extends User {
         // uncheckedTasksList = new HashMap<Integer, Task>();
     }
 
+    public ManagerUser(String name, String email, String password) {
+        super(name, email, password);
+    }
+
     public Map<String, SubordinateUser> getSubordinateList() {
         return subordinateList;
     }

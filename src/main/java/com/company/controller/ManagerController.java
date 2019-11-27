@@ -23,7 +23,7 @@ public class ManagerController {
     // create
     @PostMapping("/manager")
     public ManagerUser createManagerUser(@RequestBody ManagerUser manager) {
-        ManagerUser mu = managerTasksService.createManagerUser(manager.getName());
+        ManagerUser mu = managerTasksService.createManagerUser(manager.getName(), manager.getEmail(), manager.getPassword());
         return mu;
     }
 

@@ -20,8 +20,8 @@ public class ManagerTasksService extends UserTasksService {
     @Autowired
     private SubordinateTasksService subordinateTasksService;
 
-    public ManagerUser createManagerUser(String name) {
-        return managerUserRepository.save(new ManagerUser(name));
+    public ManagerUser createManagerUser(String name, String email, String password) {
+        return managerUserRepository.save(new ManagerUser(name, email, password));
     }
 
     public ManagerUser getByUserID(String id) {
