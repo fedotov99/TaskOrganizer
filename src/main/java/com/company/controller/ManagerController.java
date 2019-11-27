@@ -22,8 +22,8 @@ public class ManagerController {
 
     // create
     @PostMapping("/manager")
-    public ManagerUser createManagerUser(@RequestParam String name) {
-        ManagerUser mu = managerTasksService.createManagerUser(name);
+    public ManagerUser createManagerUser(@RequestBody ManagerUser manager) {
+        ManagerUser mu = managerTasksService.createManagerUser(manager.getName());
         return mu;
     }
 
