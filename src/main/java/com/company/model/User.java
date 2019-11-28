@@ -1,10 +1,15 @@
 package com.company.model;
 import org.springframework.data.annotation.Id;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 
-public abstract class User {
+public abstract class User implements UserDetails {
     @Id
     private String userID;
     private static int counter = 1;
@@ -64,6 +69,33 @@ public abstract class User {
 
     public void setLocalUserTaskList(Map<String, Task> localUserTaskList) {
         this.localUserTaskList = localUserTaskList;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this instanceof ManagerUser) {
+            return Arrays.asList(new SimpleGrantedAuthority("ROLE_MANAGER"));
+        }
+        else {
+            return Arrays.asList(new SimpleGrantedAuthority("ROLE_SUBORDINATE"));
+        }
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
