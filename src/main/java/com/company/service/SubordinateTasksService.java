@@ -20,9 +20,9 @@ public class SubordinateTasksService extends UserTasksService {
     private TaskService taskService;
 
     // TODO: what if receive manager ID instead of manager object and then retrieve him from repository?
-    public SubordinateUser createSubordinateUser(String name, String managerID, int score, PositionType position) {
+    public SubordinateUser createSubordinateUser(String name, String email, String password, String managerID, int score, PositionType position) {
         // if not to save here, than newSU's ID will be null, and NPE:
-        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, managerID, score, position));
+        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, email, password, managerID, score, position));
         ManagerUser manager = managerTasksService.getByUserID(managerID);
         managerTasksService.addSubordinateToManager(manager, newSU);
         return newSU;

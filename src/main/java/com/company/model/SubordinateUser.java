@@ -20,6 +20,13 @@ public class SubordinateUser extends User {
         this.position = position;
     }
 
+    public SubordinateUser(String name, String email, String password, String managerID, int score, PositionType position) {
+        super(name, email, password);
+        this.managerID = managerID;
+        this.score = score;
+        this.position = position;
+    }
+
     public String getManagerID() {
         return managerID;
     }

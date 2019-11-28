@@ -23,7 +23,7 @@ public class SubordinateController {
     @PostMapping("/subordinate")
     // TODO: get rid of @RequestParam String managerID, because it is in body
     public SubordinateUser createSubordinateUser(@RequestParam String managerID, @RequestBody SubordinateUser subordinate) {
-        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), managerID, subordinate.getScore(), subordinate.getPosition());
+        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), managerID, subordinate.getScore(), subordinate.getPosition());
         return su;
     }
 
