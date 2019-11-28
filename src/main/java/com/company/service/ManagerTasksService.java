@@ -21,7 +21,7 @@ public class ManagerTasksService extends UserTasksService {
     private SubordinateTasksService subordinateTasksService;
 
     public ManagerUser createManagerUser(String name, String email, String password) {
-        return managerUserRepository.save(new ManagerUser(name, email, password));
+        return managerUserRepository.save(new ManagerUser(name, email, password)); // TODO: encode password
     }
 
     public ManagerUser getByUserID(String id) {
