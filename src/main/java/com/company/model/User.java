@@ -72,6 +72,11 @@ public abstract class User implements UserDetails {
     }
 
     @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this instanceof ManagerUser) {
             return Arrays.asList(new SimpleGrantedAuthority("ROLE_MANAGER"));

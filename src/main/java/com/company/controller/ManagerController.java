@@ -20,12 +20,13 @@ public class ManagerController {
     @Autowired
     private TaskService taskService;
 
-    // create
+    // this method were moved to RegisterController
+/*    // create
     @PostMapping("/manager")
     public ManagerUser createManagerUser(@RequestBody ManagerUser manager) {
         ManagerUser mu = managerTasksService.createManagerUser(manager.getName(), manager.getEmail(), manager.getPassword());
         return mu;
-    }
+    }*/
 
     // retrieve
     @GetMapping("/manager/{id}")

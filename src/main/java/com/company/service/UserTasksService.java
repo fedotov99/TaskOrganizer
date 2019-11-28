@@ -6,10 +6,14 @@ import com.company.repository.SubordinateUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Qualifier("userDetails")
 @Service
@@ -28,14 +32,26 @@ public abstract class UserTasksService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) // actually email instead of username
             throws UsernameNotFoundException {
+
         User user = subordinateUserRepository.findByEmail(email);
         if (user != null) {
-            return user;
+            return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(),
+                    user.getPassword(),
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_SUBORDINATE")));
+        }
+
+        user = managerUserRepository.findByEmail(email);
+
+        if (user != null) {
+            return new org.springframework.security.core.userdetails.User(
+                    user.getEmail(),
+                    user.getPassword(),
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_MANAGER")));
         }
         else {
-            user = managerUserRepository.findByEmail(email);
+            throw new UsernameNotFoundException(
+                    "User '" + email + "' not found");
         }
-        throw new UsernameNotFoundException(
-                "User '" + email + "' not found");
     }
 }
