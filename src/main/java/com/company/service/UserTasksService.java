@@ -5,8 +5,6 @@ import com.company.repository.ManagerUserRepository;
 import com.company.repository.SubordinateUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -38,7 +36,7 @@ public abstract class UserTasksService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
                     user.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_SUBORDINATE")));
+                    Collections.singletonList(new SimpleGrantedAuthority(SubordinateUser.getRole())));
         }
 
         user = managerUserRepository.findByEmail(email);
@@ -47,7 +45,7 @@ public abstract class UserTasksService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
                     user.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_MANAGER")));
+                    Collections.singletonList(new SimpleGrantedAuthority(ManagerUser.getRole())));
         }
         else {
             throw new UsernameNotFoundException(

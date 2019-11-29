@@ -9,6 +9,7 @@ public class SubordinateUser extends User {
     private String managerID;
     private int score = 0;
     private PositionType position;
+    private static final String role = "ROLE_SUBORDINATE";
 
     public SubordinateUser() {
     }
@@ -49,5 +50,9 @@ public class SubordinateUser extends User {
 
     public void setPosition(PositionType position) {
         this.position = position;
+    }
+
+    public static String getRole() {
+        return role;
     }
 }

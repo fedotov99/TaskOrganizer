@@ -10,6 +10,7 @@ public class ManagerUser extends User {
     // each manager will have one or more sub.
     private Map<String, SubordinateUser>  subordinateList = new HashMap<String, SubordinateUser>();
     private Map<String, Task> uncheckedTasksList = new HashMap<String, Task>(); // requests from sub.
+    private static final String role = "ROLE_MANAGER";
 
     public ManagerUser() {
     }
@@ -38,6 +39,10 @@ public class ManagerUser extends User {
 
     public void setUncheckedTasksList(Map<String, Task> uncheckedTasksList) {
         this.uncheckedTasksList = uncheckedTasksList;
+    }
+
+    public static String getRole() {
+        return role;
     }
 
     @Override

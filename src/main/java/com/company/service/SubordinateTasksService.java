@@ -36,6 +36,10 @@ public class SubordinateTasksService extends UserTasksService {
         return subordinateUserRepository.findByName(name);
     }
 
+    public SubordinateUser getByEmail(String email) {
+        return subordinateUserRepository.findByEmail(email);
+    }
+
     public List<SubordinateUser> getAll(){
         return subordinateUserRepository.findAll();
     }
