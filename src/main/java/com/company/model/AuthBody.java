@@ -4,6 +4,9 @@ public class AuthBody {
     String email;
     String password;
 
+    public AuthBody() {
+    }
+
     public AuthBody(String email, String password) {
         this.email = email;
         this.password = password;

@@ -3,10 +3,15 @@ package com.company.model;
 public class AuthRespond {
     String sessionUserID;
     String role;
+    boolean success;
 
-    public AuthRespond(String sessionUserID, String role) {
+    public AuthRespond() {
+    }
+
+    public AuthRespond(String sessionUserID, String role, boolean success) {
         this.sessionUserID = sessionUserID;
         this.role = role;
+        this.success = success;
     }
 
     public String getSessionUserID() {
@@ -23,5 +28,13 @@ public class AuthRespond {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 }
