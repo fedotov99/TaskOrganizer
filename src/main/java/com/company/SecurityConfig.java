@@ -38,14 +38,16 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/subordinate", "/subordinate/**")
+                .antMatchers("/**")
+                .permitAll();
+                /*.antMatchers("/subordinate", "/subordinate/**")
                 .access("hasRole('ROLE_SUBORDINATE')")
                 .antMatchers("/manager", "/manager/**")
                 .access("hasRole('ROLE_MANAGER')")
                 .antMatchers("/task", "/task/**")
                 .authenticated()
                 .antMatchers("/create", "/create/**", "/util", "/util/**")
-                .permitAll();
+                .permitAll();*/
     }
 
 }
