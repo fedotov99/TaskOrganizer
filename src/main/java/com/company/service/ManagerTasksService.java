@@ -34,6 +34,10 @@ public class ManagerTasksService extends UserTasksService {
         return managerUserRepository.findByName(name);
     }
 
+    public ManagerUser getByEmail(String email) {
+        return managerUserRepository.findByEmail(email);
+    }
+
     public List<ManagerUser> getAll(){
         return managerUserRepository.findAll();
     }
