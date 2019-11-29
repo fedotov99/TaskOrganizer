@@ -78,10 +78,10 @@ public class ManagerController {
     }
 
     @RequestMapping("/manager/{id}/complete")
-    public String completeTask(@PathVariable("id") String managerID, @RequestParam String taskID, @RequestParam String report) {
+    public String completeTask(@PathVariable("id") String managerID, @RequestBody Task task) {
         ManagerUser mU = managerTasksService.getByUserID(managerID);
-        managerTasksService.completeTask(mU, taskID, report);
-        return "Completed task " + taskID;
+        managerTasksService.completeTask(mU, task.getTaskID(), task.getReport());
+        return "Completed task " + task.getTaskID();
     }
 
     @RequestMapping("/manager/{id}/delete")
@@ -123,6 +123,11 @@ public class ManagerController {
     @GetMapping("/manager/{id}/getSubordinateList")
     public List<SubordinateUser> getSubordinateList(@PathVariable String id) {
         return managerTasksService.getSubordinateList(id);
+    }
+
+    @GetMapping("/manager/{id}/getSubordinatesWithUrgentTasks")
+    public List<SubordinateUser> getSubordinatesWithUrgentTasks(@PathVariable String id) {
+        return managerTasksService.getSubordinatesWithUrgentTasks(id);
     }
 
     @RequestMapping("/manager/{id}/approveTask")
