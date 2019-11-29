@@ -7,7 +7,7 @@ Control your project tasks: assign priority, mark as completed and distribute ta
 * Subordinate can complete task, add report and send it for approval to manager.
 * Manager can whether to approve or to reject subordinate's work.
     * In the first case, the subordinate automatically receives scores depending on the priority type of the completed task.
-    * In the second case, changes requested. The task becomes uncompleted and is being sent back to sabordinate for revision.
+    * In the second case, changes requested. The task becomes uncompleted and is being sent back to subordinate for revision.
 
 So control subordinates' success and check their scores from time to time. Don't forget to raise their position if they have scores enough.
 
