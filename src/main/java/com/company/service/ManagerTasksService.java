@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.HashMap;
 
 @Primary
 @Service
@@ -238,14 +235,24 @@ public class ManagerTasksService extends UserTasksService {
         return manager.getUncheckedTasksList().size();
     }
 
+    public List<SubordinateUser> getSubordinatesWithUrgentTasks(String managerID) {
+        ManagerUser manager = getByUserID(managerID);
+        Predicate<Task> isTaskUrgent = task -> task.getPriority() == PriorityType.URGENT;
+        List<SubordinateUser> returnList = new LinkedList<>(Arrays.asList(selectSubordinatesWithDefiniteTaskType(manager, isTaskUrgent)));
+        return returnList;
+    }
+
     public SubordinateUser[] selectSubordinatesWithDefiniteTaskType(ManagerUser manager, Predicate<Task> taskPredicate) {
         Predicate<SubordinateUser> subordinateUserPredicate = new Predicate<SubordinateUser>() {
             @Override
             public boolean test(SubordinateUser subordinateUser) {
-                return subordinateUser.getLocalUserTaskList().values().stream().anyMatch(taskPredicate);
+                // we have to take sub from DB, because reference to sub's local task list into manager's sub list is not being synced with real sub's task list.
+                SubordinateUser subordinateFromDB = subordinateTasksService.getByUserID(subordinateUser.getUserID());
+                return subordinateFromDB.getLocalUserTaskList().values().stream().anyMatch(taskPredicate);
             }
         };
         Map<String, SubordinateUser> subList = manager.getSubordinateList();
-        return subList.values().stream().filter(subordinateUserPredicate).toArray(SubordinateUser[]::new);
+        SubordinateUser[] returnArray = subList.values().stream().filter(subordinateUserPredicate).toArray(SubordinateUser[]::new);
+        return returnArray;
     }
 }
