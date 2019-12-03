@@ -15,7 +15,7 @@ public abstract class User implements UserDetails {
     private String userID;
     private static int counter = 1;
     private String name;
-    @Indexed(unique = true)
+    // @Indexed(unique = true)
     private String email; // TODO: make unique
     private String password;
     private Map<String, Task> localUserTaskList = new HashMap<String, Task>();
