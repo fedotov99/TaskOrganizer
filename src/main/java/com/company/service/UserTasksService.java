@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-@Qualifier("userDetails")
+
 @Service
-public abstract class UserTasksService implements UserDetailsService {
+public abstract class UserTasksService {
     @Autowired
     protected SubordinateUserRepository subordinateUserRepository;
     @Autowired
@@ -27,29 +27,5 @@ public abstract class UserTasksService implements UserDetailsService {
 
     public abstract void deleteTaskFromLocalUserTaskList(User user, String taskID);
 
-    @Override
-    public UserDetails loadUserByUsername(String email) // actually email instead of username
-            throws UsernameNotFoundException {
 
-        User user = subordinateUserRepository.findByEmail(email);
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
-                    user.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority(SubordinateUser.getRole())));
-        }
-
-        user = managerUserRepository.findByEmail(email);
-
-        if (user != null) {
-            return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
-                    user.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority(ManagerUser.getRole())));
-        }
-        else {
-            throw new UsernameNotFoundException(
-                    "User '" + email + "' not found");
-        }
-    }
 }
