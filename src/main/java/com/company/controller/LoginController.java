@@ -17,8 +17,6 @@ import java.util.Collections;
 @RestController
 public class LoginController {
     @Autowired
-    private UserTasksService userTasksService;
-    @Autowired
     private ManagerTasksService managerTasksService;
     @Autowired
     private SubordinateTasksService subordinateTasksService;
@@ -26,7 +24,6 @@ public class LoginController {
     @PostMapping("/login")
     public AuthRespond authenticate(@RequestBody AuthBody authBody) {
         String role = "";
-        UserDetails userDetails = userTasksService.loadUserByUsername(authBody.getEmail());
         User user = subordinateTasksService.getByEmail(authBody.getEmail());
         if (user == null) {
             user = managerTasksService.getByEmail(authBody.getEmail());
