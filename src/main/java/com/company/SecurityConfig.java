@@ -13,10 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
-    @Qualifier("userDetails")
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -38,9 +39,13 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**")
-                .permitAll();
-                /*.antMatchers("/subordinate", "/subordinate/**")
+                .antMatchers("/login", "/create/manager", "/create/subordinate", "/util/manager").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic();
+
+/*                .antMatchers("/subordinate", "/subordinate/**")
                 .access("hasRole('ROLE_SUBORDINATE')")
                 .antMatchers("/manager", "/manager/**")
                 .access("hasRole('ROLE_MANAGER')")

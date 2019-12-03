@@ -3,16 +3,12 @@ package com.company.controller;
 import com.company.model.*;
 import com.company.service.ManagerTasksService;
 import com.company.service.SubordinateTasksService;
-import com.company.service.UserTasksService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.Base64;
 
 @RestController
 public class LoginController {
@@ -38,5 +34,13 @@ public class LoginController {
         }
         else
             return new AuthRespond("", "", false);
+    }
+
+    @RequestMapping("/user")
+    public Principal user(HttpServletRequest request) {
+        String authToken = request.getHeader("Authorization")
+                .substring("Basic".length()).trim();
+        return () ->  new String(Base64.getDecoder()
+                .decode(authToken)).split(":")[0];
     }
 }
