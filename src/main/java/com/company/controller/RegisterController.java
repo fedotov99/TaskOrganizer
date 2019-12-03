@@ -6,10 +6,13 @@ import com.company.service.ManagerTasksService;
 import com.company.service.SubordinateTasksService;
 import com.company.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.http.HttpResponse;
 
 @RestController
 public class RegisterController {
@@ -22,6 +25,10 @@ public class RegisterController {
 
     @PostMapping("/create/manager")
     public ManagerUser createManagerUser(@RequestBody ManagerUser manager) {
+        ManagerUser userExists = managerTasksService.getByEmail(manager.getEmail());
+        if (userExists != null) {
+            throw new BadCredentialsException("Manager with email: " + manager.getEmail() + " already exists");
+        }
         ManagerUser mu = managerTasksService.createManagerUser(manager.getName(), manager.getEmail(), manager.getPassword());
         return mu;
     }
@@ -29,6 +36,10 @@ public class RegisterController {
     @PostMapping("/create/subordinate")
     // TODO: get rid of @RequestParam String managerID, because it is in body
     public SubordinateUser createSubordinateUser(@RequestParam String managerID, @RequestBody SubordinateUser subordinate) {
+        SubordinateUser userExists = subordinateTasksService.getByEmail(subordinate.getEmail());
+        if (userExists != null) {
+            throw new BadCredentialsException("Subordinate with email: " + subordinate.getEmail() + " already exists");
+        }
         SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), managerID, subordinate.getScore(), subordinate.getPosition());
         return su;
     }
