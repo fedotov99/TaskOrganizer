@@ -1,5 +1,6 @@
 package com.company.model;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ public abstract class User implements UserDetails {
     private String userID;
     private static int counter = 1;
     private String name;
+    @Indexed(unique = true)
     private String email; // TODO: make unique
     private String password;
     private Map<String, Task> localUserTaskList = new HashMap<String, Task>();
@@ -79,10 +81,10 @@ public abstract class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this instanceof ManagerUser) {
-            return Arrays.asList(new SimpleGrantedAuthority("ROLE_MANAGER"));
+            return Arrays.asList(new SimpleGrantedAuthority(ManagerUser.getRole()));
         }
         else {
-            return Arrays.asList(new SimpleGrantedAuthority("ROLE_SUBORDINATE"));
+            return Arrays.asList(new SimpleGrantedAuthority(SubordinateUser.getRole()));
         }
     }
 
