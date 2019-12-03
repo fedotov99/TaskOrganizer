@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.function.Predicate;
 
-@Primary
 @Service
 public class ManagerTasksService extends UserTasksService {
     @Autowired
@@ -94,7 +93,7 @@ public class ManagerTasksService extends UserTasksService {
                 newMU = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList());
             }
         } else {
-            System.out.println("Wrong user!");
+            System.out.println("Wrong user!"); // todo delete sout
         }
     }
 
@@ -113,7 +112,7 @@ public class ManagerTasksService extends UserTasksService {
                 newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
         } else {
-            System.out.println("Wrong user!");
+            System.out.println("Wrong user!");  // todo delete sout
         }
     }
 
@@ -128,7 +127,7 @@ public class ManagerTasksService extends UserTasksService {
                 newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
         } else {
-            System.out.println("Wrong user!");
+            System.out.println("Wrong user!");  // todo delete sout
         }
     }
 
