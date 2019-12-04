@@ -30,13 +30,15 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
         auth
-                .userDetailsService(userDetailsService);
-                //.passwordEncoder(encoder());
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(encoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login", "/create/manager", "/create/subordinate", "/util/manager").permitAll()
