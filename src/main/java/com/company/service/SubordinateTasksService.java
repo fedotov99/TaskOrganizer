@@ -4,6 +4,7 @@ import com.company.model.*;
 import com.company.repository.ManagerUserRepository;
 import com.company.repository.SubordinateUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -18,10 +19,12 @@ public class SubordinateTasksService extends UserTasksService {
     private ManagerTasksService managerTasksService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public SubordinateUser createSubordinateUser(String name, String email, String password, String managerID, int score, PositionType position) {
         // if not to save here, than newSU's ID will be null, and NPE:
-        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, email, password, managerID, score, position));
+        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, email, passwordEncoder.encode(password), managerID, score, position));
         ManagerUser manager = managerTasksService.getByUserID(managerID);
         managerTasksService.addSubordinateToManager(manager, newSU);
         return newSU;
