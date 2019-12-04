@@ -3,7 +3,10 @@ package com.company.service;
 import com.company.model.*;
 import com.company.repository.ManagerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,9 +20,11 @@ public class ManagerTasksService extends UserTasksService {
     private TaskService taskService;
     @Autowired
     private SubordinateTasksService subordinateTasksService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public ManagerUser createManagerUser(String name, String email, String password) {
-        return managerUserRepository.save(new ManagerUser(name, email, password)); // TODO: encode password
+        return managerUserRepository.save(new ManagerUser(name, email, passwordEncoder.encode(password)));
     }
 
     public ManagerUser getByUserID(String id) {
