@@ -32,13 +32,12 @@ public class RegisterController {
     }
 
     @PostMapping("/create/subordinate")
-    // TODO: get rid of @RequestParam String managerID, because it is in body
-    public SubordinateUser createSubordinateUser(@RequestParam String managerID, @RequestBody SubordinateUser subordinate) {
+    public SubordinateUser createSubordinateUser(@RequestBody SubordinateUser subordinate) {
         SubordinateUser userExists = subordinateTasksService.getByEmail(subordinate.getEmail());
         if (userExists != null) {
             throw new BadCredentialsException("Subordinate with email: " + subordinate.getEmail() + " already exists");
         }
-        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), managerID, subordinate.getScore(), subordinate.getPosition());
+        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), subordinate.getManagerID(), subordinate.getScore(), subordinate.getPosition());
         return su;
     }
 }
