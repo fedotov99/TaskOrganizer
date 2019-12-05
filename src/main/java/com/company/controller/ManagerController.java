@@ -68,6 +68,12 @@ public class ManagerController {
         return "Deleted all managers";
     }
 
+    @PostMapping("/manager/task")
+    public Task createTaskByDescriptionAndPriority(@RequestBody Task task) {
+        Task t = taskService.createTask(task.getDescription(), task.getPriority(), task.getExecutorID());
+        return t;
+    }
+
     @PutMapping("/manager/{id}/update")
     public Task updateTask(@PathVariable("id") String managerID, @RequestBody Task task) {
         ManagerUser mU = managerTasksService.getByUserID(managerID);

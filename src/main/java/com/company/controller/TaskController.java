@@ -15,6 +15,9 @@ import java.util.List;
 // This controller can be helpful for admin dashboard (if it is needed) or testing,
 // but if we work with user's account, we should call specific user controller's methods
 // to be sure that user's local data structures are always up to date.
+
+// UPD: this controller was denied to all. use manager's and subordinate's controller instead of this
+
 @RestController
 public class TaskController {
     @Autowired

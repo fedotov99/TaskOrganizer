@@ -65,6 +65,12 @@ public class SubordinateController {
         return "Deleted all subordinates";
     }
 
+    @PostMapping("/subordinate/task")
+    public Task createTaskByDescriptionAndPriority(@RequestBody Task task) {
+        Task t = taskService.createTask(task.getDescription(), task.getPriority(), task.getExecutorID());
+        return t;
+    }
+
     @PutMapping("/subordinate/{id}/update")
     public Task updateTask(@PathVariable("id") String subordinateID, @RequestBody Task task) {
         SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
