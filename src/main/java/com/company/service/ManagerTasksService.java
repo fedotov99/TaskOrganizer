@@ -136,6 +136,16 @@ public class ManagerTasksService extends UserTasksService {
         }
     }
 
+    public void deleteTaskFromUncheckedTaskList(ManagerUser manager, String taskID) {
+        if (manager.getLocalUserTaskList().containsKey(taskID)) {
+            manager.getUncheckedTasksList().remove(taskID);
+
+            // update DB
+            ManagerUser newMU = getByUserID(manager.getUserID());
+            newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
+        }
+    }
+
     public void addSubordinateToManager(ManagerUser manager, SubordinateUser su) { // suppose that subordinate knows about his manager
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
 
@@ -228,6 +238,7 @@ public class ManagerTasksService extends UserTasksService {
             // concerning DB update, see addTaskToUser() method
         }
         deleteTaskFromLocalUserTaskList(manager, task.getTaskID()); // sent to subordinate and got rid of this task
+        deleteTaskFromUncheckedTaskList(manager, task.getTaskID()); // when manager wants to assign task to another subordinate after review
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
     }
 
