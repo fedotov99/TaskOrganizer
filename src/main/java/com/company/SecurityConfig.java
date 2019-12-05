@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
+    @Qualifier("custom")
     @Autowired
     private UserDetailsService userDetailsService;
 

@@ -1,8 +1,10 @@
 package com.company;
 
 import com.company.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,8 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
+    @Qualifier("custom")
     @Bean
-    public org.springframework.security.core.userdetails.UserDetailsService getUserDetailsService(){
+    public UserDetailsService getUserDetailsService(){
         return new CustomUserDetailsService();
     }
 
