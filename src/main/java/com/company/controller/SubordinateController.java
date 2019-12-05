@@ -1,5 +1,6 @@
 package com.company.controller;
 
+import com.company.model.ManagerUser;
 import com.company.model.SubordinateUser;
 import com.company.model.Task;
 import com.company.service.ManagerTasksService;
@@ -99,6 +100,11 @@ public class SubordinateController {
     @GetMapping("/subordinate/{id}/getSubordinateTaskList")
     public List<Task> getSubordinateTaskList(@PathVariable String id) {
         return subordinateTasksService.getSubordinateTaskList(id);
+    }
+
+    @GetMapping("/subordinate/getManagerInfo/{id}")
+    public ManagerUser getManagerUserInfoByID(@PathVariable String id) {
+        return managerTasksService.getByUserID(id);
     }
 
     // TODO: this controller becomes redundant due to completeTask controller
