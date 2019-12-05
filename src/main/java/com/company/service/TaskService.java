@@ -32,7 +32,6 @@ public class TaskService {
 
         managerTasksService.addTaskToUser(executor, t);
 
-        // TODO: should we yet another time save to repository?
         return taskRepository.save(t);
     }
 

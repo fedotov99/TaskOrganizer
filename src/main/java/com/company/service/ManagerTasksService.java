@@ -97,8 +97,6 @@ public class ManagerTasksService extends UserTasksService {
                 ManagerUser newMU = getByUserID(user.getUserID());
                 newMU = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList());
             }
-        } else {
-            System.out.println("Wrong user!"); // todo delete sout
         }
     }
 
@@ -116,8 +114,6 @@ public class ManagerTasksService extends UserTasksService {
                 ManagerUser newMU = getByUserID(manager.getUserID());
                 newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
-        } else {
-            System.out.println("Wrong user!");  // todo delete sout
         }
     }
 
@@ -131,8 +127,6 @@ public class ManagerTasksService extends UserTasksService {
                 ManagerUser newMU = getByUserID(manager.getUserID());
                 newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
-        } else {
-            System.out.println("Wrong user!");  // todo delete sout
         }
     }
 
@@ -240,7 +234,6 @@ public class ManagerTasksService extends UserTasksService {
         deleteTaskFromLocalUserTaskList(manager, task.getTaskID()); // sent to subordinate and got rid of this task
         deleteTaskFromUncheckedTaskList(manager, task.getTaskID()); // when manager wants to assign task to another subordinate after review
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
-        String breakpoint = ""; // todo: delete
     }
 
     public int getSubordinatesSizeOfManager(ManagerUser manager) {

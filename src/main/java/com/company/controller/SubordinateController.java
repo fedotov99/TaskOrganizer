@@ -20,26 +20,11 @@ public class SubordinateController {
     @Autowired
     private TaskService taskService;
 
-    // this method were moved to RegisterController
-/*    // create
-    @PostMapping("/subordinate")
-    // TODO: get rid of @RequestParam String managerID, because it is in body
-    public SubordinateUser createSubordinateUser(@RequestParam String managerID, @RequestBody SubordinateUser subordinate) {
-        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), managerID, subordinate.getScore(), subordinate.getPosition());
-        return su;
-    }*/
-
     // retrieve
     @GetMapping("/subordinate/{id}")
     public SubordinateUser getSubordinateUserByID(@PathVariable String id) {
         return subordinateTasksService.getByUserID(id);
     }
-
-    // TODO: solve ambiguous mapping
-/*    @GetMapping("/subordinate/{name}")
-    public SubordinateUser getSubordinateUserByName(@PathVariable String name) {
-        return subordinateTasksService.getByName(name);
-    }*/
 
     @GetMapping("/subordinate")
     public List<SubordinateUser> getAllSubordinates(){
@@ -106,13 +91,4 @@ public class SubordinateController {
     public ManagerUser getManagerUserInfoByID(@PathVariable String id) {
         return managerTasksService.getByUserID(id);
     }
-
-    // TODO: this controller becomes redundant due to completeTask controller
-/*    @RequestMapping("/subordinate/{id}/sendRequestToManager")
-    public String sendRequestForTaskApprovalToManager(@PathVariable("id") String subordinateID, @RequestParam String taskID) {
-        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
-        Task t = taskService.getByTaskID(taskID);
-        subordinateTasksService.sendRequestForTaskApprovalToManager(sU, t);
-        return "Sent to manager task " + taskID;
-    }*/
 }

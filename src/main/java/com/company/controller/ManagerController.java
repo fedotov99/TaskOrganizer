@@ -20,33 +20,16 @@ public class ManagerController {
     @Autowired
     private TaskService taskService;
 
-    // this method were moved to RegisterController
-/*    // create
-    @PostMapping("/manager")
-    public ManagerUser createManagerUser(@RequestBody ManagerUser manager) {
-        ManagerUser mu = managerTasksService.createManagerUser(manager.getName(), manager.getEmail(), manager.getPassword());
-        return mu;
-    }*/
-
     // retrieve
     @GetMapping("/manager/{id}")
     public ManagerUser getManagerUserByID(@PathVariable String id) {
         return managerTasksService.getByUserID(id);
     }
 
-/* // TODO: solve ambiguous mapping
-    @GetMapping("/manager/{name}")
-    public ManagerUser getManagerUserByName(@PathVariable String name) {
-        return managerTasksService.getByName(name);
-    }
-*/
-
     @GetMapping("/manager")
     public List<ManagerUser> getAllManagers(){
         return managerTasksService.getAll();
     }
-
-    //@GetMapping("manager/{id}/")
 
     // update
     @PutMapping("/manager/{id}")
@@ -106,15 +89,6 @@ public class ManagerController {
         managerTasksService.addSubordinateToManager(mU, sU);
         return "Added subordinate " + subordinateID + " to manager " + managerID;
     }
-
-    // TODO: why is this controller for? Subordinates already have "send request for task approval" controller
-/*    @RequestMapping("/manager/{id}/addToUnchecked")
-    public String addToUncheckedTasksListOfManager(@PathVariable("id") String managerID, @RequestParam String taskID) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
-        Task t = taskService.getByTaskID(taskID);
-        managerTasksService.addToUncheckedTasksListOfManager(mU, t);
-        return "Added task " + taskID + " to unchecked task list of manager " + managerID;
-    }*/
 
     @GetMapping("/manager/{id}/getManagerTaskList")
     public List<Task> getManagerTaskList(@PathVariable String id) {

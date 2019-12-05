@@ -7,10 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import java.util.Base64;
-
 @RestController
 public class LoginController {
     @Autowired
@@ -32,20 +28,10 @@ public class LoginController {
             role = SubordinateUser.getRole();
         }
 
-        //if (user.getPassword().equals(authBody.getPassword())) { // TODO: decode password and check
-
         if (passwordEncoder.matches(authBody.getPassword(), user.getPassword())) {
             return new AuthRespond(user.getUserID(), role, true);
         }
         else
             return new AuthRespond("", "", false);
     }
-
-/*    @RequestMapping("/user")
-    public Principal user(HttpServletRequest request) {
-        String authToken = request.getHeader("Authorization")
-                .substring("Basic".length()).trim();
-        return () ->  new String(Base64.getDecoder()
-                .decode(authToken)).split(":")[0];
-    }*/
 }
