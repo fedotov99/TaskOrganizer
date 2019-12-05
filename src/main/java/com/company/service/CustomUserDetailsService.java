@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collections;
 
-public class userDetailsService implements UserDetailsService {
+public class CustomUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
     protected SubordinateUserRepository subordinateUserRepository;
     @Autowired
