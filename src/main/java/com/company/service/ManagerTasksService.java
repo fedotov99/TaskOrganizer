@@ -137,7 +137,7 @@ public class ManagerTasksService extends UserTasksService {
     }
 
     public void deleteTaskFromUncheckedTaskList(ManagerUser manager, String taskID) {
-        if (manager.getLocalUserTaskList().containsKey(taskID)) {
+        if (manager.getUncheckedTasksList().containsKey(taskID)) {
             manager.getUncheckedTasksList().remove(taskID);
 
             // update DB
@@ -240,6 +240,7 @@ public class ManagerTasksService extends UserTasksService {
         deleteTaskFromLocalUserTaskList(manager, task.getTaskID()); // sent to subordinate and got rid of this task
         deleteTaskFromUncheckedTaskList(manager, task.getTaskID()); // when manager wants to assign task to another subordinate after review
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
+        String breakpoint = ""; // todo: delete
     }
 
     public int getSubordinatesSizeOfManager(ManagerUser manager) {
