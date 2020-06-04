@@ -3,11 +3,10 @@ package com.company.service;
 import com.company.model.*;
 import com.company.repository.ManagerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -23,50 +22,59 @@ public class ManagerTasksService extends UserTasksService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public ManagerUser createManagerUser(String name, String email, String password) {
+    public Mono<ManagerUser> createManagerUser(String name, String email, String password) {
         return managerUserRepository.save(new ManagerUser(name, email, passwordEncoder.encode(password)));
     }
 
-    public ManagerUser getByUserID(String id) {
+    public Mono<ManagerUser> getByUserID(String id) {
         return managerUserRepository.findByUserID(id);
     }
 
-    public List<ManagerUser> getByName(String name) {
+    public Flux<ManagerUser> getByName(String name) {
         return managerUserRepository.findByName(name);
     }
 
-    public ManagerUser getByEmail(String email) {
+    public Mono<ManagerUser> getByEmail(String email) {
         return managerUserRepository.findByEmail(email);
     }
 
-    public List<ManagerUser> getAll(){
+    public Flux<ManagerUser> getAll(){
         return managerUserRepository.findAll();
     }
 
-    public ManagerUser updateManagerUser(String id, String name, Map<String, SubordinateUser> subordinateList, Map<String, Task> uncheckedTasksList) {
-        ManagerUser newMU = managerUserRepository.findByUserID(id);
-        newMU.setName(name);
-        newMU.setSubordinateList(subordinateList);
-        newMU.setUncheckedTasksList(uncheckedTasksList);
-        return managerUserRepository.save(newMU);
+    public Mono<ManagerUser> updateManagerUser(String id, String name, Map<String, SubordinateUser> subordinateList, Map<String, Task> uncheckedTasksList) {
+        return managerUserRepository.findByUserID(id)
+                .flatMap(newMU -> {
+                    newMU.setName(name);
+                    newMU.setSubordinateList(subordinateList);
+                    newMU.setUncheckedTasksList(uncheckedTasksList);
+
+                    return managerUserRepository.save(newMU);
+                });
     }
 
-    public ManagerUser updateManagerUserTaskList(String id, Map<String, Task> localUserTaskList) {
-        ManagerUser newMU = managerUserRepository.findByUserID(id);
-        newMU.setLocalUserTaskList(localUserTaskList);
-        return managerUserRepository.save(newMU);
+    public Mono<ManagerUser> updateManagerUserTaskList(String id, Map<String, Task> localUserTaskList) {
+        return managerUserRepository.findByUserID(id)
+                .flatMap(newMU -> {
+                    newMU.setLocalUserTaskList(localUserTaskList);
+                    return managerUserRepository.save(newMU);
+                });
     }
 
-    public ManagerUser updateManagerUserSubordinateList(String id, Map<String, SubordinateUser>  subordinateList) {
-        ManagerUser newMU = managerUserRepository.findByUserID(id);
-        newMU.setSubordinateList(subordinateList);
-        return managerUserRepository.save(newMU);
+    public Mono<ManagerUser> updateManagerUserSubordinateList(String id, Map<String, SubordinateUser>  subordinateList) {
+        return managerUserRepository.findByUserID(id)
+                .flatMap(newMU -> {
+                    newMU.setSubordinateList(subordinateList);
+                    return managerUserRepository.save(newMU);
+                });
     }
 
-    public ManagerUser updateManagerUserUncheckedTaskList(String id, Map<String, Task> uncheckedTasksList) {
-        ManagerUser newMU = managerUserRepository.findByUserID(id);
-        newMU.setUncheckedTasksList(uncheckedTasksList);
-        return managerUserRepository.save(newMU);
+    public Mono<ManagerUser> updateManagerUserUncheckedTaskList(String id, Map<String, Task> uncheckedTasksList) {
+        return managerUserRepository.findByUserID(id)
+                .flatMap(newMU -> {
+                    newMU.setUncheckedTasksList(uncheckedTasksList);
+                    return managerUserRepository.save(newMU);
+                });
     }
 
     public void deleteById(String id) {
@@ -94,7 +102,7 @@ public class ManagerTasksService extends UserTasksService {
                 user.getLocalUserTaskList().put(t.getTaskID(), t);
 
                 // update DB
-                ManagerUser newMU = getByUserID(user.getUserID());
+                Mono<ManagerUser> newMU = getByUserID(user.getUserID());
                 newMU = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList());
             }
         }
@@ -111,7 +119,7 @@ public class ManagerTasksService extends UserTasksService {
                 // update DB
                 Task nT = taskService.getByTaskID(taskID);
                 nT = taskService.updateTaskReportAndCompleted(taskID, report,true);
-                ManagerUser newMU = getByUserID(manager.getUserID());
+                Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
                 newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
         }
@@ -124,7 +132,7 @@ public class ManagerTasksService extends UserTasksService {
                 manager.getLocalUserTaskList().remove(taskID);
 
                 // update DB
-                ManagerUser newMU = getByUserID(manager.getUserID());
+                Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
                 newMU = updateManagerUserTaskList(manager.getUserID(), manager.getLocalUserTaskList());
             }
         }
@@ -135,7 +143,7 @@ public class ManagerTasksService extends UserTasksService {
             manager.getUncheckedTasksList().remove(taskID);
 
             // update DB
-            ManagerUser newMU = getByUserID(manager.getUserID());
+            Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
             newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
         }
     }
@@ -144,71 +152,77 @@ public class ManagerTasksService extends UserTasksService {
         manager.getSubordinateList().putIfAbsent(su.getUserID(), su);
 
         // update DB
-        ManagerUser newMU = getByUserID(manager.getUserID());
+        Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
         newMU = updateManagerUserSubordinateList(manager.getUserID(), manager.getSubordinateList());
     }
 
-    public List<Task> getManagerTaskList(String managerID) {
-        ManagerUser manager = getByUserID(managerID);
-        Map<String, Task> managerTasksList = manager.getLocalUserTaskList();
-        return new LinkedList<>(managerTasksList.values());
+    public Flux<Task> getManagerTaskList(String managerID) {
+        return getByUserID(managerID)
+                .flatMapMany(manager -> {
+                    Map<String, Task> managerTasksList = manager.getLocalUserTaskList();
+                    return Flux.fromIterable(managerTasksList.values());
+                });
     }
 
-    public List<SubordinateUser> getSubordinateList(String managerID) {
-        ManagerUser manager = getByUserID(managerID);
-        Map<String, SubordinateUser> subordinateList = manager.getSubordinateList();
-        return new LinkedList<>(subordinateList.values());
+    public Flux<SubordinateUser> getSubordinateList(String managerID) {
+        return getByUserID(managerID)
+                .flatMapMany(manager -> {
+                    Map<String, SubordinateUser> managerTasksList = manager.getSubordinateList();
+                    return Flux.fromIterable(managerTasksList.values());
+                });
     }
 
-    public List<Task> getUncheckedTaskList(String managerID) {
-        ManagerUser manager = getByUserID(managerID);
-        Map<String, Task> uncheckedTasksList = manager.getUncheckedTasksList();
-        return new LinkedList<>(uncheckedTasksList.values());
+    public Flux<Task> getUncheckedTaskList(String managerID) {
+        return getByUserID(managerID)
+                .flatMapMany(manager -> {
+                    Map<String, Task> managerTasksList = manager.getUncheckedTasksList();
+                    return Flux.fromIterable(managerTasksList.values());
+                });
     }
 
     public void addToUncheckedTasksListOfManager(ManagerUser manager, Task task) {  // this method will be used by any subordinate who wants to send task request
         manager.getUncheckedTasksList().putIfAbsent(task.getTaskID(), task);
 
         // update DB
-        ManagerUser newMU = getByUserID(manager.getUserID());
+        Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
         newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
     }
 
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
-            SubordinateUser subordinateUser = subordinateTasksService.getByUserID(task.getExecutorID());
+            SubordinateUser subordinateUser = subordinateTasksService.getByUserID(task.getExecutorID()).block();
             subordinateUser.setScore(subordinateUser.getScore() + taskValue.get(task.getPriority()));
 
             // update DB
-            subordinateUser = subordinateTasksService.updateSubordinateUserScore(subordinateUser.getUserID(), subordinateUser.getScore());
+            subordinateUser = subordinateTasksService.updateSubordinateUserScore(subordinateUser.getUserID(), subordinateUser.getScore()).block();
             // in order to sync subordinate's score, update it in object
             updateSubordinateScoreInSubordinateList(manager.getUserID(), subordinateUser.getUserID());
 
             manager.getUncheckedTasksList().remove(task.getTaskID());
 
             // update DB
-            ManagerUser newMU = getByUserID(manager.getUserID());
+            Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
             newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
         }
     }
 
     public void updateSubordinateScoreInSubordinateList(String managerID, String subordinateID) {
-        ManagerUser manager = getByUserID(managerID);
-        SubordinateUser subordinate = subordinateTasksService.getByUserID(subordinateID);
-        manager.getSubordinateList().get(subordinateID).setScore(subordinate.getScore());
-        manager = updateManagerUserSubordinateList(managerID, manager.getSubordinateList());
+        Mono<ManagerUser> manager = getByUserID(managerID);
+        Mono<SubordinateUser> subordinate = subordinateTasksService.getByUserID(subordinateID);
+        manager.block().getSubordinateList().get(subordinateID).setScore(subordinate.block().getScore());
+        manager = updateManagerUserSubordinateList(managerID, manager.block().getSubordinateList());
     }
 
     public void declineTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) { // changes requested
         if (manager.getUncheckedTasksList().containsKey(task.getTaskID())) {
-            SubordinateUser subordinateUser = subordinateTasksService.getByUserID(task.getExecutorID());
+            SubordinateUser subordinateUser = subordinateTasksService.getByUserID(task.getExecutorID()).block();
             assignTaskToSubordinateOfManager(manager, task, subordinateUser); // send back
             // concerning DB update, see assignTaskToSubordinateOfManager() method
 
             manager.getUncheckedTasksList().remove(task.getTaskID());
 
             // update DB
-            ManagerUser newMU = getByUserID(manager.getUserID());
+            Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
             newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
         }
     }
@@ -220,9 +234,9 @@ public class ManagerTasksService extends UserTasksService {
 
         // update DB
         if (user instanceof ManagerUser)
-            user = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList());
+            user = updateManagerUserTaskList(user.getUserID(), user.getLocalUserTaskList()).block();
         else if (user instanceof SubordinateUser)
-            user = subordinateTasksService.updateSubordinateUserTaskList(user.getUserID(), user.getLocalUserTaskList());
+            user = subordinateTasksService.updateSubordinateUserTaskList(user.getUserID(), user.getLocalUserTaskList()).block();
         task = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user.getUserID());
     }
 
@@ -245,7 +259,7 @@ public class ManagerTasksService extends UserTasksService {
     }
 
     public List<SubordinateUser> getSubordinatesWithUrgentTasks(String managerID) {
-        ManagerUser manager = getByUserID(managerID);
+        ManagerUser manager = getByUserID(managerID).block();
         Predicate<Task> isTaskUrgent = task -> task.getPriority() == PriorityType.URGENT;
         List<SubordinateUser> returnList = new LinkedList<>(Arrays.asList(selectSubordinatesWithDefiniteTaskType(manager, isTaskUrgent)));
         return returnList;
@@ -256,7 +270,7 @@ public class ManagerTasksService extends UserTasksService {
             @Override
             public boolean test(SubordinateUser subordinateUser) {
                 // we have to take sub from DB, because reference to sub's local task list into manager's sub list is not being synced with real sub's task list.
-                SubordinateUser subordinateFromDB = subordinateTasksService.getByUserID(subordinateUser.getUserID());
+                SubordinateUser subordinateFromDB = subordinateTasksService.getByUserID(subordinateUser.getUserID()).block();
                 return subordinateFromDB.getLocalUserTaskList().values().stream().anyMatch(taskPredicate);
             }
         };

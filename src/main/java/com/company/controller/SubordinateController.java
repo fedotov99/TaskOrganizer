@@ -8,6 +8,8 @@ import com.company.service.SubordinateTasksService;
 import com.company.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -22,20 +24,19 @@ public class SubordinateController {
 
     // retrieve
     @GetMapping("/subordinate/{id}")
-    public SubordinateUser getSubordinateUserByID(@PathVariable String id) {
+    public Mono<SubordinateUser> getSubordinateUserByID(@PathVariable String id) {
         return subordinateTasksService.getByUserID(id);
     }
 
     @GetMapping("/subordinate")
-    public List<SubordinateUser> getAllSubordinates(){
+    public Flux<SubordinateUser> getAllSubordinates(){
         return subordinateTasksService.getAll();
     }
 
     // update
     @PutMapping("/subordinate/{id}")
-    public SubordinateUser updateSubordinateUser(@PathVariable String id, @RequestBody SubordinateUser subordinate) {
-        SubordinateUser su = subordinateTasksService.updateSubordinateUser(id, subordinate.getName(), subordinate.getManagerID(), subordinate.getScore(), subordinate.getPosition());
-        return su;
+    public Mono<SubordinateUser> updateSubordinateUser(@PathVariable String id, @RequestBody SubordinateUser subordinate) {
+        return subordinateTasksService.updateSubordinateUser(id, subordinate.getName(), subordinate.getManagerID(), subordinate.getScore(), subordinate.getPosition());
     }
 
     // delete
@@ -59,7 +60,7 @@ public class SubordinateController {
 
     @PutMapping("/subordinate/{id}/update")
     public Task updateTask(@PathVariable("id") String subordinateID, @RequestBody Task task) {
-        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID).block();
         // first update task in DB, second update task in localUserTaskList
         Task t = taskService.updateTask(task.getTaskID(), task.getDescription(), task.getReport(), task.isCompleted(), task.getPriority());
         subordinateTasksService.updateTaskInLocalUserTaskList(sU, task.getTaskID());
@@ -68,14 +69,14 @@ public class SubordinateController {
 
     @RequestMapping("/subordinate/{id}/complete")
     public String completeTask(@PathVariable("id") String subordinateID, @RequestBody Task task) {
-        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID).block();
         subordinateTasksService.completeTask(sU, task.getTaskID(), task.getReport());
         return "Completed task " + task.getTaskID();
     }
 
     @RequestMapping("/subordinate/{id}/delete")
     public String deleteTask(@PathVariable("id") String subordinateID, @RequestParam String taskID) {
-        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID).block();
         // first delete from local user task list, then delete from DB
         subordinateTasksService.deleteTaskFromLocalUserTaskList(sU, taskID);
         taskService.deleteByTaskID(taskID);
@@ -83,12 +84,12 @@ public class SubordinateController {
     }
 
     @GetMapping("/subordinate/{id}/getSubordinateTaskList")
-    public List<Task> getSubordinateTaskList(@PathVariable String id) {
+    public Flux<Task> getSubordinateTaskList(@PathVariable String id) {
         return subordinateTasksService.getSubordinateTaskList(id);
     }
 
     @GetMapping("/subordinate/getManagerInfo/{id}")
-    public ManagerUser getManagerUserInfoByID(@PathVariable String id) {
+    public Mono<ManagerUser> getManagerUserInfoByID(@PathVariable String id) {
         return managerTasksService.getByUserID(id);
     }
 }

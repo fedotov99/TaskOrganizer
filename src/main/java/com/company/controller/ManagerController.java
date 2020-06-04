@@ -8,6 +8,8 @@ import com.company.service.SubordinateTasksService;
 import com.company.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -22,20 +24,19 @@ public class ManagerController {
 
     // retrieve
     @GetMapping("/manager/{id}")
-    public ManagerUser getManagerUserByID(@PathVariable String id) {
+    public Mono<ManagerUser> getManagerUserByID(@PathVariable String id) {
         return managerTasksService.getByUserID(id);
     }
 
     @GetMapping("/manager")
-    public List<ManagerUser> getAllManagers(){
+    public Flux<ManagerUser> getAllManagers(){
         return managerTasksService.getAll();
     }
 
     // update
     @PutMapping("/manager/{id}")
-    public ManagerUser updateManagerUser(@PathVariable String id, @RequestBody ManagerUser manager) {
-        ManagerUser mu = managerTasksService.updateManagerUser(id, manager.getName(), manager.getSubordinateList(), manager.getUncheckedTasksList());
-        return mu;
+    public Mono<ManagerUser> updateManagerUser(@PathVariable String id, @RequestBody ManagerUser manager) {
+        return managerTasksService.updateManagerUser(id, manager.getName(), manager.getSubordinateList(), manager.getUncheckedTasksList());
     }
 
     // delete
@@ -59,7 +60,7 @@ public class ManagerController {
 
     @PutMapping("/manager/{id}/update")
     public Task updateTask(@PathVariable("id") String managerID, @RequestBody Task task) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
         // first update task in DB, second update task in localUserTaskList
         Task t = taskService.updateTask(task.getTaskID(), task.getDescription(), task.getReport(), task.isCompleted(), task.getPriority());
         managerTasksService.updateTaskInLocalUserTaskList(mU, task.getTaskID());
@@ -68,14 +69,14 @@ public class ManagerController {
 
     @RequestMapping("/manager/{id}/complete")
     public String completeTask(@PathVariable("id") String managerID, @RequestBody Task task) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
         managerTasksService.completeTask(mU, task.getTaskID(), task.getReport());
         return "Completed task " + task.getTaskID();
     }
 
     @RequestMapping("/manager/{id}/delete")
     public String deleteTask(@PathVariable("id") String managerID, @RequestParam String taskID) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
         // first delete from local user task list, then delete from DB
         managerTasksService.deleteTaskFromLocalUserTaskList(mU, taskID);
         taskService.deleteByTaskID(taskID);
@@ -84,24 +85,24 @@ public class ManagerController {
 
     @RequestMapping("/manager/{id}/addSubordinate")
     public String addSubordinateToManager(@PathVariable("id") String managerID, @RequestParam String subordinateID) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
-        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
+        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID).block();
         managerTasksService.addSubordinateToManager(mU, sU);
         return "Added subordinate " + subordinateID + " to manager " + managerID;
     }
 
     @GetMapping("/manager/{id}/getManagerTaskList")
-    public List<Task> getManagerTaskList(@PathVariable String id) {
+    public Flux<Task> getManagerTaskList(@PathVariable String id) {
         return managerTasksService.getManagerTaskList(id);
     }
 
     @GetMapping("/manager/{id}/getUncheckedTaskList")
-    public List<Task> getUncheckedTaskList(@PathVariable String id) {
+    public Flux<Task> getUncheckedTaskList(@PathVariable String id) {
         return managerTasksService.getUncheckedTaskList(id);
     }
 
     @GetMapping("/manager/{id}/getSubordinateList")
-    public List<SubordinateUser> getSubordinateList(@PathVariable String id) {
+    public Flux<SubordinateUser> getSubordinateList(@PathVariable String id) {
         return managerTasksService.getSubordinateList(id);
     }
 
@@ -112,7 +113,7 @@ public class ManagerController {
 
     @RequestMapping("/manager/{id}/approveTask")
     public String approveTaskInUncheckedTasksListOfManager(@PathVariable("id") String managerID, @RequestParam String taskID) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
         Task t = taskService.getByTaskID(taskID);
         managerTasksService.approveTaskInUncheckedTasksListOfManager(mU, t);
         return "Approved task " + taskID + " in unchecked task list of manager " + managerID;
@@ -120,7 +121,7 @@ public class ManagerController {
 
     @RequestMapping("/manager/{id}/declineTask")
     public String declineTaskInUncheckedTasksListOfManager(@PathVariable("id") String managerID, @RequestParam String taskID) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
         Task t = taskService.getByTaskID(taskID);
         managerTasksService.declineTaskInUncheckedTasksListOfManager(mU, t);
         return "Declined task " + taskID + " in unchecked task list of manager " + managerID;
@@ -128,9 +129,9 @@ public class ManagerController {
 
     @RequestMapping("/manager/{id}/assignTaskToSubordinate")
     public String assignTaskToSubordinateOfManager(@PathVariable("id") String managerID, @RequestParam String taskID, @RequestParam String subordinateID) {
-        ManagerUser mU = managerTasksService.getByUserID(managerID);
+        ManagerUser mU = managerTasksService.getByUserID(managerID).block();
         Task t = taskService.getByTaskID(taskID);
-        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID);
+        SubordinateUser sU = subordinateTasksService.getByUserID(subordinateID).block();
         managerTasksService.assignTaskToSubordinateOfManager(mU, t, sU);
         return "Assigned task " + taskID + " to subordinate " + subordinateID + " of manager " + managerID;
     }

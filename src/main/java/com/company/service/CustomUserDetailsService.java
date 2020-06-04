@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements org.springframework.security.co
     public UserDetails loadUserByUsername(String email) // actually email instead of username
             throws UsernameNotFoundException {
 
-        User user = subordinateUserRepository.findByEmail(email);
+        User user = subordinateUserRepository.findByEmail(email).block();
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements org.springframework.security.co
                     Collections.singletonList(new SimpleGrantedAuthority(SubordinateUser.getRole())));
         }
 
-        user = managerUserRepository.findByEmail(email);
+        user = managerUserRepository.findByEmail(email).block();
 
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(

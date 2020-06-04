@@ -26,9 +26,9 @@ public class TaskService {
     public Task createTask(String description, PriorityType priority, String executorID) {
         Task t = taskRepository.save(new Task(description, priority)); // because task must have generated ID
 
-        User executor = managerTasksService.getByUserID(executorID);
+        User executor = managerTasksService.getByUserID(executorID).block();
         if (executor == null)
-            executor = subordinateTasksService.getByUserID(executorID);
+            executor = subordinateTasksService.getByUserID(executorID).block();
 
         managerTasksService.addTaskToUser(executor, t);
 

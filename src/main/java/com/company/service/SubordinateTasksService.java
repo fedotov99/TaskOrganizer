@@ -6,6 +6,8 @@ import com.company.repository.SubordinateUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,51 +24,58 @@ public class SubordinateTasksService extends UserTasksService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public SubordinateUser createSubordinateUser(String name, String email, String password, String managerID, int score, PositionType position) {
+    public Mono<SubordinateUser> createSubordinateUser(String name, String email, String password, String managerID, int score, PositionType position) {
         // if not to save here, than newSU's ID will be null, and NPE:
-        SubordinateUser newSU = subordinateUserRepository.save(new SubordinateUser(name, email, passwordEncoder.encode(password), managerID, score, position));
-        ManagerUser manager = managerTasksService.getByUserID(managerID);
-        managerTasksService.addSubordinateToManager(manager, newSU);
+        Mono<SubordinateUser> newSU = subordinateUserRepository.save(new SubordinateUser(name, email, passwordEncoder.encode(password), managerID, score, position));
+        Mono<ManagerUser> manager = managerTasksService.getByUserID(managerID);
+        managerTasksService.addSubordinateToManager(manager.block(), newSU.block());
         return newSU;
     }
 
-    public SubordinateUser getByUserID(String id) {
+    public Mono<SubordinateUser> getByUserID(String id) {
         return subordinateUserRepository.findByUserID(id);
     }
 
-    public SubordinateUser getByName(String name) {
+    public Mono<SubordinateUser> getByName(String name) {
         return subordinateUserRepository.findByName(name);
     }
 
-    public SubordinateUser getByEmail(String email) {
+    public Mono<SubordinateUser> getByEmail(String email) {
         return subordinateUserRepository.findByEmail(email);
     }
 
-    public List<SubordinateUser> getAll(){
+    public Flux<SubordinateUser> getAll(){
         return subordinateUserRepository.findAll();
     }
 
-    public SubordinateUser updateSubordinateUser(String id, String name, String managerID, int score, PositionType position) {
-        SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
-        newSU.setName(name);
-        newSU.setManagerID(managerID);
-        newSU.setScore(score);
-        newSU.setPosition(position);
-        ManagerUser manager = managerTasksService.getByUserID(managerID);
-        managerTasksService.addSubordinateToManager(manager, newSU);
-        return subordinateUserRepository.save(newSU);
+    public Mono<SubordinateUser> updateSubordinateUser(String id, String name, String managerID, int score, PositionType position) {
+        return subordinateUserRepository.findByUserID(id)
+                .flatMap(newSU -> {
+                    newSU.setName(name);
+                    newSU.setManagerID(managerID);
+                    newSU.setScore(score);
+                    newSU.setPosition(position);
+
+                    Mono<ManagerUser> manager = managerTasksService.getByUserID(managerID);
+                    managerTasksService.addSubordinateToManager(manager.block(), newSU);
+                    return subordinateUserRepository.save(newSU);
+                });
     }
 
-    public SubordinateUser updateSubordinateUserTaskList(String id, Map<String, Task> localUserTaskList) {
-        SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
-        newSU.setLocalUserTaskList(localUserTaskList);
-        return subordinateUserRepository.save(newSU);
+    public Mono<SubordinateUser> updateSubordinateUserTaskList(String id, Map<String, Task> localUserTaskList) {
+        return subordinateUserRepository.findByUserID(id)
+                .flatMap(newSU -> {
+                    newSU.setLocalUserTaskList(localUserTaskList);
+                    return subordinateUserRepository.save(newSU);
+                });
     }
 
-    public SubordinateUser updateSubordinateUserScore(String id, int score) {
-        SubordinateUser newSU = subordinateUserRepository.findByUserID(id);
-        newSU.setScore(score);
-        return subordinateUserRepository.save(newSU);
+    public Mono<SubordinateUser> updateSubordinateUserScore(String id, int score) {
+        return subordinateUserRepository.findByUserID(id)
+                .flatMap(newSU -> {
+                    newSU.setScore(score);
+                    return subordinateUserRepository.save(newSU);
+                });
     }
 
     public void deleteById(String id) {
@@ -86,7 +95,7 @@ public class SubordinateTasksService extends UserTasksService {
                 user.getLocalUserTaskList().put(t.getTaskID(), t);
 
                 // update DB
-                SubordinateUser newSU = getByUserID(user.getUserID());
+                Mono<SubordinateUser> newSU = getByUserID(user.getUserID());
                 newSU = updateSubordinateUserTaskList(user.getUserID(), user.getLocalUserTaskList());
             }
         } else {
@@ -106,7 +115,7 @@ public class SubordinateTasksService extends UserTasksService {
                 // update DB
                 Task nT = taskService.getByTaskID(taskID);
                 nT = taskService.updateTaskReportAndCompleted(taskID, report,true);
-                SubordinateUser newSU = getByUserID(subordinate.getUserID());
+                Mono<SubordinateUser> newSU = getByUserID(subordinate.getUserID());
                 newSU = updateSubordinateUserTaskList(subordinate.getUserID(), subordinate.getLocalUserTaskList());
             }
         } else {
@@ -121,7 +130,7 @@ public class SubordinateTasksService extends UserTasksService {
                 subordinate.getLocalUserTaskList().remove(taskID);
 
                 // update DB
-                SubordinateUser newSU = getByUserID(subordinate.getUserID());
+                Mono<SubordinateUser> newSU = getByUserID(subordinate.getUserID());
                 newSU = updateSubordinateUserTaskList(subordinate.getUserID(), subordinate.getLocalUserTaskList());
             }
         } else {
@@ -129,15 +138,17 @@ public class SubordinateTasksService extends UserTasksService {
         }
     }
 
-    public List<Task> getSubordinateTaskList(String subordinateID) {
-        SubordinateUser subordinate = getByUserID(subordinateID);
-        Map<String, Task> subordinateTasksList = subordinate.getLocalUserTaskList();
-        return new LinkedList<>(subordinateTasksList.values());
+    public Flux<Task> getSubordinateTaskList(String subordinateID) {
+        return getByUserID(subordinateID)
+                .flatMapMany(subordinate -> {
+                    Map<String, Task> subordinateTasksList = subordinate.getLocalUserTaskList();
+                    return Flux.fromIterable(subordinateTasksList.values());
+                });
     }
 
     public void sendRequestForTaskApprovalToManager(SubordinateUser subordinate, Task task) {
-        ManagerUser manager = managerTasksService.getByUserID(subordinate.getManagerID());
-        managerTasksService.addToUncheckedTasksListOfManager(manager, task);
+        Mono<ManagerUser> manager = managerTasksService.getByUserID(subordinate.getManagerID());
+        managerTasksService.addToUncheckedTasksListOfManager(manager.block(), task);
         deleteTaskFromLocalUserTaskList(subordinate, task.getTaskID()); // subordinate thinks that task is ready (until manager doesn't decline)
         // concerning DB update, see deleteTaskFromLocalUserTaskList() method
     }

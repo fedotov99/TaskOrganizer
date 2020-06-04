@@ -10,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 public class RegisterController {
@@ -21,22 +22,22 @@ public class RegisterController {
     private TaskService taskService;
 
     @PostMapping("/create/manager")
-    public ManagerUser createManagerUser(@RequestBody ManagerUser manager) {
-        ManagerUser userExists = managerTasksService.getByEmail(manager.getEmail());
+    public Mono<ManagerUser> createManagerUser(@RequestBody ManagerUser manager) {
+        ManagerUser userExists = managerTasksService.getByEmail(manager.getEmail()).block();
         if (userExists != null) {
             throw new BadCredentialsException("Manager with email: " + manager.getEmail() + " already exists");
         }
-        ManagerUser mu = managerTasksService.createManagerUser(manager.getName(), manager.getEmail(), manager.getPassword());
-        return mu;
+
+        return managerTasksService.createManagerUser(manager.getName(), manager.getEmail(), manager.getPassword());
     }
 
     @PostMapping("/create/subordinate")
-    public SubordinateUser createSubordinateUser(@RequestBody SubordinateUser subordinate) {
-        SubordinateUser userExists = subordinateTasksService.getByEmail(subordinate.getEmail());
+    public Mono<SubordinateUser> createSubordinateUser(@RequestBody SubordinateUser subordinate) {
+        SubordinateUser userExists = subordinateTasksService.getByEmail(subordinate.getEmail()).block();
         if (userExists != null) {
             throw new BadCredentialsException("Subordinate with email: " + subordinate.getEmail() + " already exists");
         }
-        SubordinateUser su = subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), subordinate.getManagerID(), subordinate.getScore(), subordinate.getPosition());
-        return su;
+
+        return subordinateTasksService.createSubordinateUser(subordinate.getName(), subordinate.getEmail(), subordinate.getPassword(), subordinate.getManagerID(), subordinate.getScore(), subordinate.getPosition());
     }
 }

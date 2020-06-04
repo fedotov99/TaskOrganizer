@@ -19,9 +19,9 @@ public class LoginController {
     @PostMapping("/login")
     public AuthRespond authenticate(@RequestBody AuthBody authBody) {
         String role = "";
-        User user = subordinateTasksService.getByEmail(authBody.getEmail());
+        User user = subordinateTasksService.getByEmail(authBody.getEmail()).block();
         if (user == null) {
-            user = managerTasksService.getByEmail(authBody.getEmail());
+            user = managerTasksService.getByEmail(authBody.getEmail()).block();
             role = ManagerUser.getRole();
         }
         else {
