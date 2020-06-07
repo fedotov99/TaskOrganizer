@@ -1,6 +1,8 @@
 package com.company.service;
 
 import com.company.model.*;
+import com.company.model.notification.TaskAssignedNotificationMessage;
+import com.company.model.notification.UncheckedTaskNotificationMessage;
 import com.company.repository.ManagerUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,8 @@ public class ManagerTasksService extends UserTasksService {
     private SubordinateTasksService subordinateTasksService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private NotificationService notificationService;
 
     public Mono<ManagerUser> createManagerUser(String name, String email, String password) {
         return managerUserRepository.save(new ManagerUser(name, email, passwordEncoder.encode(password)));
@@ -186,6 +190,8 @@ public class ManagerTasksService extends UserTasksService {
         // update DB
         Mono<ManagerUser> newMU = getByUserID(manager.getUserID());
         newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
+
+        notificationService.sendMessageToUncheckedTaskForManagerQueue(new UncheckedTaskNotificationMessage(task.getTaskID(), manager.getUserID()));
     }
 
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
@@ -238,6 +244,8 @@ public class ManagerTasksService extends UserTasksService {
         else if (user instanceof SubordinateUser)
             user = subordinateTasksService.updateSubordinateUserTaskList(user.getUserID(), user.getLocalUserTaskList()).block();
         task = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user.getUserID());
+
+        notificationService.sendMessageToTaskAssignedQueue(new TaskAssignedNotificationMessage(task.getTaskID(), user.getUserID()));
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
