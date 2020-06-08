@@ -4,6 +4,7 @@ import com.company.model.*;
 import com.company.model.notification.TaskAssignedNotificationMessage;
 import com.company.model.notification.UncheckedTaskNotificationMessage;
 import com.company.repository.ManagerUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 import java.util.function.Predicate;
 
+@Slf4j
 @Service
 public class ManagerTasksService extends UserTasksService {
     @Autowired
@@ -192,6 +194,7 @@ public class ManagerTasksService extends UserTasksService {
         newMU = updateManagerUserUncheckedTaskList(manager.getUserID(), manager.getUncheckedTasksList());
 
         notificationService.sendMessageToUncheckedTaskForManagerQueue(new UncheckedTaskNotificationMessage(task.getTaskID(), manager.getUserID()));
+        log.info("Manager {} received unchecked task {}", manager.getUserID(), task.getTaskID());
     }
 
     public void approveTaskInUncheckedTasksListOfManager(ManagerUser manager, Task task) {
@@ -246,6 +249,7 @@ public class ManagerTasksService extends UserTasksService {
         task = taskService.updateTaskCompletedAndExecutor(task.getTaskID(), false, user.getUserID());
 
         notificationService.sendMessageToTaskAssignedQueue(new TaskAssignedNotificationMessage(task.getTaskID(), user.getUserID()));
+        log.info("Task {} was assigned to user {}", task.getTaskID(), user.getUserID());
     }
 
     public void assignTaskToSubordinateOfManager(ManagerUser manager, Task task, SubordinateUser su) {
